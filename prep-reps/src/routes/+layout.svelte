@@ -1,11 +1,27 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+	import Navbar from '../components/Navbar.svelte';
 
 	let { children } = $props();
+	let pages = [
+		{
+			address: "/train",
+			title: "Train"
+		},
+		{
+			address: "/construct",
+			title: "Construct"
+		}
+	]
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+<!-- TODO: make a nice icon -->
 </svelte:head>
 
+<div class="navbar">
+<Navbar pages={pages}/>
+</div>
+
+<div class="body">
 {@render children()}
+</div>

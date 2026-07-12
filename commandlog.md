@@ -4,9 +4,8 @@
 nvm use 25.2.1
 npx sv@0.15.3 create --template minimal --types ts --add prettier eslint --install npm prep-reps
 cd prep-reps
-npm install svelte5-chessground
+npm install --save @lichess-org/chessground chessops
 
-code prep-reps/src/routes/+page.svelte
 npm run dev
 
 ```
