@@ -11,6 +11,7 @@
 
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
+    import ChessgroundControls from "./ChessgroundControls.svelte";
 
 
     function userMove(from: Key, to: Key):void {
@@ -46,7 +47,7 @@
         }
     }
 
-    let {board="blue", pieces="merida", puzzle}: {board: string, pieces: string, puzzle: Puzzle} = $props();
+    let {board="blue", pieces="merida", puzzle, nextPuzzleFoo}: {board: string, pieces: string, puzzle: Puzzle, nextPuzzleFoo: CallableFunction} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let currentMove: number;
@@ -71,6 +72,7 @@
 </script>
 
 <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+<ChessgroundControls nextPuzzleFoo={nextPuzzleFoo}/>
 
 <style>
     #chessDiv { /* :global(.cg-wrap) */
