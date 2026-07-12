@@ -9,8 +9,9 @@
 		console.debug("next puzzle");
 	}
 
+	let chessGroundSize = "512px";
 </script>
 
-<h1>This is a chessboard</h1>
+<br /><br />
 
-<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle} nextPuzzleFoo={nextPuzzle}/>
+<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle} nextPuzzleFoo={nextPuzzle} --chessgroundSize={chessGroundSize}/>

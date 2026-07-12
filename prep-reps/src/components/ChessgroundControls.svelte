@@ -1,20 +1,22 @@
 <script lang="ts">
-let {nextPuzzleFoo}: {nextPuzzleFoo: CallableFunction} = $props();
+let {buttonDefs}: {buttonDefs: {label: string, onclick: CallableFunction}[]} = $props();
 </script>
 
 <div id="chessgroundNavigationControls">
-    <button onclick={() => nextPuzzleFoo()} class="chessgroundNavigationButton">Next Puzzle</button>
+    {#each buttonDefs as btn}
+        <button onclick={() => btn.onclick()} class="chessgroundCtrlButton">{btn.label}</button>
+    {/each}
 </div>
 
 <style>
-    button.chessgroundNavigationButton {
+    button.chessgroundCtrlButton {
         background-color: #ddd;
         display: inline-block;
-        width: 100px;
-        height: 100px;
+        width: calc(var(--chessgroundSize)/var(--buttonsCount));
+        height: 50px;
     }
 
-    button.chessgroundNavigationButton:hover {
+    button.chessgroundCtrlButton:hover {
         background-color: #0b0;
         color: black;
     }

@@ -26,3 +26,12 @@ cd prep-reps
 npm i
 npm run dev
 ```
+
+# TODO
+
+* navigating through played moves
+  * bind move tree navigation buttons with keyboard arrows
+  * make currentPgn a list (tree) of clickable nodes
+* move tree logic with sidelines
+* DB with puzzle library (Create-Read for starters)
+* side panel to navigate through puzzles
