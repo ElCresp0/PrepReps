@@ -18,3 +18,11 @@ The idea of this project is to provide a simple web chess application, built mos
 ## tech stack
 
 - Svelte (lightweight frontend framework with typescript support), SvelteKit
+
+## setup
+
+```bash
+cd prep-reps
+npm i
+npm run dev
+```
