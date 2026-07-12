@@ -8,10 +8,12 @@
     import { makeBoardFen, parseFen } from "chessops/fen";
     import { moveEquals, opposite, parseSquare } from "chessops/util";
     import { chessgroundMove } from "chessops/compat";
+    import ChessgroundControls from "./ChessgroundControls.svelte";
+    import { firstMove, lastMove, nextMove, prevMove } from "../utils/ChessUtils";
 
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import ChessgroundControls from "./ChessgroundControls.svelte";
+    import { makeSan } from "chessops/san";
 
 
     function userMove(from: Key, to: Key):void {
@@ -25,12 +27,14 @@
             ground.set({
                 "fen": makeBoardFen(chess.board),
                 "turnColor": chess.turn,
-                "lastMove": playedMoves.length > 0 ? chessgroundMove(playedMoves[-1]) : undefined,
+                "lastMove": playedMoves.length > 0 ? chessgroundMove(playedMoves[playedMoves.length - 1]) : undefined,
             })
         }
         else {
-            console.debug("Correct move!");
+            console.debug("Correct move!", makeSan(chess, move));
             chess.play(move);
+            playedMoves.push(move);
+            fenHistory.push(makeBoardFen(chess.board));
             currentMove++;
             console.log(chess.turn, ground.state.movable.color, ground.state.turnColor);
             if (currentMove === puzzle.moves.length) {
@@ -51,7 +55,8 @@
     let chessDiv: HTMLElement;
     let ground: Api;
     let currentMove: number;
-    let playedMoves: Move[];
+    let playedMoves: Move[] = $state([]);
+    let fenHistory: string[] = [];
 
     let chess = $derived(Chess.fromSetup(parseFen(puzzle.fen).unwrap()).unwrap());
     let config: Config = $derived({
@@ -62,22 +67,39 @@
         "movable": {"color": chess.turn},
     });
     
+    let chessgroundButtons = $derived([
+        {onclick: firstMove, label: "<<"}, // &laquo;
+        {onclick: prevMove, label: "<"}, //&#8249;
+        {onclick: nextMove, label: ">"}, // &#8250;
+        {onclick: lastMove, label: ">>"}, // &raquo;
+        {onclick: nextPuzzleFoo, label: "Next Puzzle"},
+    ]);
+
+    let currentPgn = $derived(
+        // makePgn(chess);
+        playedMoves.map((move: Move, i: number): string => makeSan(Chess.fromSetup(parseFen(fenHistory[i]).unwrap()).unwrap(), move)).join(" ")
+    );
+
     $effect(() => {
         // updating the puzzle prop triggers this event
         ground = Chessground(chessDiv!, config);
         playedMoves = [];
+        fenHistory = [puzzle.fen];
         currentMove = 0;
+        $inspect(playedMoves);
     })
 
 </script>
 
 <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
-<ChessgroundControls nextPuzzleFoo={nextPuzzleFoo}/>
+<ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
+
+<p>{currentPgn}</p>
 
 <style>
-    #chessDiv { /* :global(.cg-wrap) */
-		width: 512px;
-		height: 512px;
+    #chessDiv {
+		width: var(--chessgroundSize);
+		height: var(--chessgroundSize);
         margin-bottom: 20px;
 	}
 </style>
