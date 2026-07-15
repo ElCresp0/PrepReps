@@ -19,7 +19,25 @@ The idea of this project is to provide a simple web chess application, built mos
 
 - Svelte (lightweight frontend framework with typescript support), SvelteKit
 
-## setup
+## setup backend
+
+```bash
+cd backend
+sudo systemctl start postgresql
+bundle install
+
+bin/rails db:create
+bin/rails db:migrate
+
+# in case of issues with DB
+bin/rails db:migrate:reset
+# or manual intervention
+bin/rails dbconsole
+
+bin/rails server
+```
+
+## setup frontend
 
 ```bash
 cd prep-reps

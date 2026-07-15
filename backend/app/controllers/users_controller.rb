@@ -1,51 +1,55 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy ]
+  before_action :authenticate_request, only: [ :profile, :destroy ]
 
   # GET /users
   def index
     @users = User.all
-
-    render json: @users
+    render json: {
+        users: @users.map { |user| UserSerializer.new(user).as_json }
+    }
   end
 
-  # GET /users/1
-  def show
-    render json: @user
+  # GET /profile
+  def profile
+    render json: UserSerializer.new(current_user).as_json
   end
 
-  # POST /users
-  def create
+  # POST /auth/sign_up
+  def sign_up
+    # TODO: migrate this method to auth_controller
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      token = JsonWebToken.encode(user_id: @user.id)
+      render json: {
+        message: "Account created",
+        user: UserSerializer.new(@user).as_json,
+        token: token
+      }, status: :created
     else
       render json: @user.errors, status: :unprocessable_content
     end
   end
+
+  # TODO: implement remaining CRUD operations
 
   # PATCH/PUT /users/1
-  def update
-    if @user.update(user_params)
-      render json: @user
-    else
-      render json: @user.errors, status: :unprocessable_content
-    end
-  end
+  # def update
+  #   if @user.update(user_params)
+  #     render json: @user
+  #   else
+  #     render json: @user.errors, status: :unprocessable_content
+  #   end
+  # end
 
-  # DELETE /users/1
+  # DELETE /users
   def destroy
-    @user.destroy!
+    current_user.destroy!
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params.expect(:id))
-    end
-
-    # Only allow a list of trusted parameters through.
     def user_params
-      params.expect(user: [ :name, :password_digest ])
+        params.permit(:name, :password)
+        # bcrypt handles password encryption as described in <https://dev.to/mohhossain/a-complete-guide-to-rails-authentication-using-jwt-403p>
     end
 end
