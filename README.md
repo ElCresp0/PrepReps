@@ -26,6 +26,14 @@ cd backend
 sudo systemctl start postgresql
 bundle install
 
+# set the following env vars in .env
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+BACKEND_HOST=
+BACKEND_PORT=
+# and run
+source .env
+
 bin/rails db:create
 bin/rails db:migrate
 
