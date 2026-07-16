@@ -13,16 +13,16 @@ class ApplicationController < ActionController::API
     end
 
     def authorize_request
-        header = request.headers['Authorization']
-        raise ExceptionHandler::AuthenticationError, 'Missing token' unless header
+        header = request.headers["Authorization"]
+        raise ExceptionHandler::AuthenticationError, "Missing token" unless header
 
-        token = header.split(' ').last
+        token = header.split(" ").last
         decoded = JsonWebToken.decode(token)
         User.find(decoded[:user_id])
     end
 
     def handle_record_not_found(e)
         # TODO: migrate rescues to ./concerns?
-        render json: {message: "User not found"}, status: :not_found
+        render json: { message: "User not found" }, status: :not_found
     end
 end

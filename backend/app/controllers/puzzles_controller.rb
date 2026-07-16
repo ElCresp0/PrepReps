@@ -3,7 +3,7 @@
 
 class PuzzlesController < ApplicationController
     before_action :authenticate_request
-   
+
     # GET /puzzles
     def index
         # TODO: add pagination
@@ -27,5 +27,4 @@ class PuzzlesController < ApplicationController
     def puzzles_params
         params.permit(:title, :pgn)
     end
-
 end

@@ -29,8 +29,8 @@ module ExceptionHandler
 
     render json: {
       error: {
-        code: 'internal_error',
-        message: Rails.env.production? ? 'An unexpected error occurred' : exception.message
+        code: "internal_error",
+        message: Rails.env.production? ? "An unexpected error occurred" : exception.message
       }
     }, status: :internal_server_error
   end
@@ -38,7 +38,7 @@ module ExceptionHandler
   def handle_not_found(exception)
     render json: {
       error: {
-        code: 'not_found',
+        code: "not_found",
         message: "Resource not found: #{exception.message}"
       }
     }, status: :not_found
@@ -47,8 +47,8 @@ module ExceptionHandler
   def handle_validation_error(exception)
     render json: {
       error: {
-        code: 'validation_failed',
-        message: 'Validation failed',
+        code: "validation_failed",
+        message: "Validation failed",
         details: exception.record.errors.messages
       }
     }, status: :unprocessable_entity
@@ -57,7 +57,7 @@ module ExceptionHandler
   def handle_parameter_missing(exception)
     render json: {
       error: {
-        code: 'missing_parameter',
+        code: "missing_parameter",
         message: exception.message
       }
     }, status: :bad_request
@@ -66,7 +66,7 @@ module ExceptionHandler
   def handle_unauthorized(exception)
     render json: {
       error: {
-        code: 'unauthorized',
+        code: "unauthorized",
         message: exception.message
       }
     }, status: :unauthorized

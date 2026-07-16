@@ -2,7 +2,6 @@
 # based on <https://dev.to/mohhossain/a-complete-guide-to-rails-authentication-using-jwt-403p>
 
 class AuthController < ApplicationController
-
     # skip_before_action :authorized, only: [:login]
     rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
@@ -19,7 +18,7 @@ class AuthController < ApplicationController
                 token: @token
             }, status: :accepted
         else
-            render json: {message: 'Incorrect password'}, status: :unauthorized
+            render json: { message: "Incorrect password" }, status: :unauthorized
         end
     end
 
@@ -31,7 +30,6 @@ class AuthController < ApplicationController
     end
 
     def handle_record_not_found(e)
-        render json: {message: "User not found"}, status: :not_found
+        render json: { message: "User not found" }, status: :not_found
     end
-
 end

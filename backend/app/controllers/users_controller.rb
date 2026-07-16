@@ -50,6 +50,6 @@ class UsersController < ApplicationController
   private
     def user_params
         params.permit(:name, :password)
-        # bcrypt handles password encryption as described in <https://dev.to/mohhossain/a-complete-guide-to-rails-authentication-using-jwt-403p>
+      # bcrypt handles password encryption as described in <https://dev.to/mohhossain/a-complete-guide-to-rails-authentication-using-jwt-403p>
     end
 end
