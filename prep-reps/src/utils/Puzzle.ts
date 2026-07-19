@@ -1,15 +1,12 @@
 import type { FEN } from "@lichess-org/chessground/types";
-// import type { Move } from "chessops/types";
 import { Chess, type Move } from "chessops";
 import { parseFen } from "chessops/fen";
-// import { parsePgn } from "chessops/pgn";
 import { parseSan } from "chessops/san";
-// import type { Move } from "./Move";
-// import assert from "assert";
 
 export class Puzzle {
     public fen: FEN;
     public moves: Move[];
+    // TODO: public title: string
 
     constructor(fen: FEN, moves: string[]) {
         this.fen = fen;
@@ -21,5 +18,9 @@ export class Puzzle {
             this.moves.push(parsed);
             chess.play(parsed);
         })
+    }
+
+    public serialize(): {moves: string[], fen: string} {
+        return {moves: ["1", "2"], fen: ""};
     }
 }
