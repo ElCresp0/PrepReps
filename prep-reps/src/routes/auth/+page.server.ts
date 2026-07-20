@@ -1,5 +1,5 @@
-import { redirect, type Cookies } from '@sveltejs/kit'; // , type Actions
-import { signIn } from '../../utils/BackendController';
+import { redirect, type Cookies } from '@sveltejs/kit';
+import { createUser, signIn } from '../../utils/BackendController';
 import type { Actions, PageServerLoad } from './$types';
 
 
@@ -28,7 +28,6 @@ export const actions = {
 	signIn: async ({ cookies, request }) => {
         console.info("signIn action");
 		const data = await request.formData();
-        console.info("username", data.get('username'));
 
         if (!data.get("username") || !data.get("password")) {
             cookies.set('login_message', 'Missing username or password', { path: '/' });
@@ -37,7 +36,6 @@ export const actions = {
 
         const response = await signIn({ name: data.get("username")!.toString(), password: data.get("password")!.toString() });
         const responseJson = await response.json();
-        console.debug("response", responseJson);
 
         // If there was an error, return an invalid response
         if (response.status !== STATUS.ACCEPTED) {
@@ -51,11 +49,33 @@ export const actions = {
 
         // Redirect to the login page
         throw redirect(STATUS.FOUND, '/profile');
-
-        // return { success: true };
 	},
-	signUp: async (event) => {
-		// TODO register the user
+	signUp: async ({ cookies, request }) => {
+        console.info("signUp action");
+		const data = await request.formData();
+
+        if (!data.get("username") || !data.get("password")) {
+            cookies.set('login_message', 'Missing username or password', { path: '/' });
+            throw redirect(STATUS.NOT_MODIFIED, 'auth');
+        }
+
+        const response = await createUser({ name: data.get("username")!.toString(), password: data.get("password")!.toString() });
+        const responseJson = await response.json();
+
+        console.debug("responseJson:", responseJson);
+
+        // If there was an error, return an invalid response
+        if (response.status !== STATUS.CREATED) {
+            let login_message = responseJson.message ?? "Failed to create user: unknown error";
+            cookies.set('login_message', login_message, { path: '/' });
+            throw redirect(STATUS.NOT_MODIFIED, 'auth');
+        }
+
+        cookies.set('token', responseJson["token"], { path: '/' });
+        cookies.set('username', responseJson["user"]["name"], { path: '/' });
+
+        // Redirect to the login page
+        throw redirect(STATUS.FOUND, '/profile');
 	}
 } satisfies Actions;
 
