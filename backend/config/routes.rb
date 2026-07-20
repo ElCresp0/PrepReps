@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Authentication
-  post "/auth/sign_up" => "users#sign_up"
+  post "/auth/sign_up" => "auth#sign_up"
   post "/auth/sign_in" => "auth#sign_in"
 
   # Users
