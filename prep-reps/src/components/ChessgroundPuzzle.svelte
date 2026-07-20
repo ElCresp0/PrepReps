@@ -86,7 +86,7 @@
         playedMoves = [];
         fenHistory = [puzzle.fen];
         currentMove = 0;
-        $inspect(playedMoves);
+        $inspect(playedMoves); // logging
     })
 
 </script>

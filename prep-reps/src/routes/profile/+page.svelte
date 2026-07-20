@@ -2,7 +2,7 @@
     import { goto } from "$app/navigation";
     import type { PageProps } from './$types';
     import { userState } from "../../state.svelte";
-    import { redirect } from "@sveltejs/kit";
+    import { resolve } from "$app/paths";
 
 
     let { data }: PageProps = $props();
@@ -15,7 +15,7 @@
         userState.token = null;
         // goto("/auth");
         // goto("/auth?/signOut");
-        goto("/auth?signOut=1");
+        goto(resolve("/auth?signOut=1"));
         // redirect(200, "/auth?/signOut");
     }
 
@@ -24,7 +24,7 @@
         console.debug("data", data);
         
         if (data.username === null || data.token === null) {
-            goto("/auth?signOut=1");
+            goto(resolve("/auth?signOut=1"));
             // redirect(200, "/auth?signOut=1");
         }
         username = data.username!;
@@ -39,5 +39,5 @@
 </script>
 
 <h1>Hello, {username}!</h1>
-<p>You have {userPuzzles.length} puzzles, head over to <a href="/train">Train Page</a> to take some pratice.</p>
+<p>You have {userPuzzles.length} puzzles, head over to <a href={resolve("/train")}>Train Page</a> to take some pratice.</p>
 <button onclick={signOut}>Sign out</button>
