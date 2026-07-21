@@ -5,8 +5,6 @@ export const load: PageServerLoad = async (event) => {
   return {
     token: event.locals.token,
     username: event.locals.username,
-    puzzles: (await getPuzzles()).map((puzzle) => {
-      return puzzle.serialize();
-    }),
+    puzzles: await getPuzzles(event.locals.token!),
   };
 };

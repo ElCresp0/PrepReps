@@ -4,19 +4,6 @@ import {
 } from "$env/static/public";
 import { Puzzle } from "./Puzzle";
 
-const TEST_PUZZLES = [
-  new Puzzle("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", [
-    "e4",
-    "c5",
-    "Nf3",
-  ]),
-  new Puzzle("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", [
-    "e4",
-    "c5",
-    "Nh3",
-  ]),
-];
-
 export async function createUser(credentials: {
   name: string;
   password: string;
@@ -58,7 +45,38 @@ export async function signIn(credentials: {
 //   console.debug(u);
 // }
 
-export async function getPuzzles(): Promise<Puzzle[]> {
+export async function postPuzzle(puzzle: Puzzle): Promise<Response> {
+  const response = await fetch(
+    `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles`,
+    {
+      method: "POST",
+      headers: [
+        ["Content-Type", "application/json"],
+        ["charset", "UTF-8"],
+      ],
+      body: JSON.stringify(puzzle.serialize()),
+    },
+  );
+  return response;
+}
+
+export async function getPuzzles(
+  token: string,
+): Promise<{ title: string; pgn: string }[]> {
   // Puzzle[]
-  return TEST_PUZZLES;
+  const response = await fetch(
+    `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles`,
+    {
+      method: "GET",
+      headers: [
+        ["Content-Type", "application/json"],
+        ["charset", "UTF-8"],
+        ["Authorization", `Bearer ${token}`],
+      ],
+    },
+  );
+  const responseJson = await response.json();
+  console.debug(responseJson);
+  return responseJson["puzzles"];
+  // return TEST_PUZZLES;
 }

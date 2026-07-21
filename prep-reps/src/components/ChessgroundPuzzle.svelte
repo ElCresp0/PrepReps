@@ -4,7 +4,7 @@
     import { Puzzle } from "../utils/Puzzle";
 	import type { Config } from "@lichess-org/chessground/config";
 	import type { Api } from "@lichess-org/chessground/api";
-    import { Chess, type Move } from "chessops";
+    import { Chess, type NormalMove } from "chessops";
     import { makeBoardFen, parseFen } from "chessops/fen";
     import { moveEquals, opposite, parseSquare } from "chessops/util";
     import { chessgroundMove } from "chessops/compat";
@@ -18,7 +18,7 @@
 
     function userMove(from: Key, to: Key):void {
         console.debug(`move ${from} -> ${to}`)
-        let move = {from: parseSquare(from), to: parseSquare(to)} as Move;
+        let move = {from: parseSquare(from), to: parseSquare(to)} as NormalMove;
         console.debug(move, puzzle.moves[currentMove]);
         if (moveEquals(puzzle.moves[currentMove], move) === false) {
             console.debug("Inorrect move!");
@@ -55,7 +55,7 @@
     let chessDiv: HTMLElement;
     let ground: Api;
     let currentMove: number;
-    let playedMoves: Move[] = $state([]);
+    let playedMoves: NormalMove[] = $state([]);
     let fenHistory: string[] = [];
 
     let chess = $derived(Chess.fromSetup(parseFen(puzzle.fen).unwrap()).unwrap());
@@ -77,7 +77,7 @@
 
     let currentPgn = $derived(
         // makePgn(chess);
-        playedMoves.map((move: Move, i: number): string => makeSan(Chess.fromSetup(parseFen(fenHistory[i]).unwrap()).unwrap(), move)).join(" ")
+        playedMoves.map((move: NormalMove, i: number): string => makeSan(Chess.fromSetup(parseFen(fenHistory[i]).unwrap()).unwrap(), move)).join(" ")
     );
 
     $effect(() => {

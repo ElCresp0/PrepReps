@@ -1,26 +1,57 @@
 import type { FEN } from "@lichess-org/chessground/types";
-import { Chess, type Move } from "chessops";
-import { parseFen } from "chessops/fen";
-import { parseSan } from "chessops/san";
+import { Chess, defaultSetup, type NormalMove } from "chessops";
+import { makeFen, parseFen } from "chessops/fen";
+import {
+  ChildNode,
+  defaultGame,
+  makePgn,
+  parsePgn,
+  type PgnNodeData,
+} from "chessops/pgn";
+import { makeSan, parseSan } from "chessops/san";
 
 export class Puzzle {
+  public title: string;
   public fen: FEN;
-  public moves: Move[];
-  // TODO: public title: string
+  public moves: NormalMove[];
 
-  constructor(fen: FEN, moves: string[]) {
-    this.fen = fen;
+  constructor(title: string, pgn: string) {
+    const game = parsePgn(pgn)[0];
+    console.debug("game:", game);
+
+    this.title = title;
+    this.fen = game.headers.get("FEN") || makeFen(defaultSetup());
     this.moves = [];
 
-    const chess = Chess.fromSetup(parseFen(fen).unwrap()).unwrap();
-    moves.forEach((m) => {
-      const parsed = parseSan(chess, m)!;
-      this.moves.push(parsed);
-      chess.play(parsed);
-    });
+    const chess = Chess.fromSetup(parseFen(this.fen).unwrap()).unwrap();
+    let currentMove = game.moves.children[0];
+    while (currentMove) {
+      const parsedSan = parseSan(chess, currentMove.data.san) as NormalMove;
+      this.moves.push(parsedSan);
+      chess.play(parsedSan);
+      currentMove = currentMove.children[0];
+    }
   }
 
-  public serialize(): { moves: string[]; fen: string } {
-    return { moves: ["1", "2"], fen: "" };
+  public serialize(): { title: string; pgn: string } {
+    const game = defaultGame<PgnNodeData>();
+    game.headers.set("FEN", this.fen);
+
+    const chess = Chess.fromSetup(parseFen(this.fen).unwrap()).unwrap();
+    let currMoveNode = new ChildNode<PgnNodeData>({
+      san: makeSan(chess, this.moves[0]),
+    });
+    const rootMove = currMoveNode;
+
+    for (let i = 1; i < this.moves.length; i++) {
+      chess.play(this.moves[i - 1]);
+      const childNode = new ChildNode({ san: makeSan(chess, this.moves[i]) });
+      currMoveNode.children.push(childNode);
+      currMoveNode = currMoveNode.children[0];
+    }
+    game.moves.children.push(rootMove);
+
+    const pgn = makePgn(game);
+    return { title: this.title, pgn: pgn };
   }
 }

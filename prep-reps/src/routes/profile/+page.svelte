@@ -7,7 +7,7 @@
 
     let { data }: PageProps = $props();
     let username: string = $state("");
-    let userPuzzles: {fen: string, moves: string[]}[] = $state([]);
+    let userPuzzles: {title: string, pgn: string}[] = $state([]);
 
     async function signOut() {
         console.debug("sign out");
