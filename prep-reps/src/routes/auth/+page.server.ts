@@ -1,6 +1,7 @@
 import { redirect, type Cookies } from "@sveltejs/kit";
 import { createUser, signIn } from "../../utils/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
+import { signOutOnError } from "$lib";
 
 enum STATUS {
   OK = 200,
@@ -11,14 +12,16 @@ enum STATUS {
 }
 
 export const load: PageServerLoad = (event) => {
-  console.info("page server load", event.url.searchParams);
   if (event.url.searchParams.get("signOut") !== null) {
     signOut(event.cookies);
   }
 
+  if (event.cookies.get("token")) {
+    // Redirect to the profile page
+    throw redirect(STATUS.FOUND, "/profile");
+  }
+
   return {
-    token: event.locals.token,
-    username: event.locals.username,
     login_message: event.locals.login_message,
   };
 };
@@ -39,6 +42,12 @@ export const actions = {
       name: data.get("username")!.toString(),
       password: data.get("password")!.toString(),
     });
+
+    if (response === undefined) {
+      signOutOnError(cookies, "Server error occured during sign in call");
+      throw redirect(STATUS.NOT_MODIFIED, "auth");
+    }
+
     const responseJson = await response.json();
 
     // If there was an error, return an invalid response
@@ -70,6 +79,12 @@ export const actions = {
       name: data.get("username")!.toString(),
       password: data.get("password")!.toString(),
     });
+
+    if (response === undefined) {
+      signOutOnError(cookies, "Server error occured during sign up call");
+      throw redirect(STATUS.NOT_MODIFIED, "auth");
+    }
+
     const responseJson = await response.json();
 
     console.debug("responseJson:", responseJson);

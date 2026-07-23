@@ -16,7 +16,7 @@ const DEMO_PUZZLES = [
 export const load: PageServerLoad = async (event) => {
   return {
     puzzles: event.locals.token
-      ? await getPuzzles(event.locals.token!)
+      ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
       : DEMO_PUZZLES,
   };
 };

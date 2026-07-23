@@ -28,3 +28,5 @@
 	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} nextPuzzleFoo={nextPuzzle} --chessgroundSize={chessGroundSize}/>
 {/if}
 
+<!-- TODO: all puzzles view -->
+<!-- TODO: interactive pgn view -->

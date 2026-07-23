@@ -5,8 +5,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.token = event.cookies.get("token") || null;
   event.locals.username = event.cookies.get("username") || null;
   event.locals.login_message = event.cookies.get("login_message") || null;
+  event.locals.postPuzzleMessage =
+    event.cookies.get("postPuzzleMessage") || null;
 
-  // remove login_message on page reload
-  event.cookies.set("login_message", "", { path: "/" });
+  // remove form feedback messages on page reload
+  event.cookies.delete("login_message", { path: "/" });
+  event.cookies.delete("postPuzzleMessage", { path: "/" });
   return resolve(event);
 };

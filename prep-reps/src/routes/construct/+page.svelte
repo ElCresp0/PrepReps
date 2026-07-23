@@ -1,2 +1,13 @@
-<h1>TODO</h1>
-<p>make an interactive chessboard to input new variations and store them in DB</p>
+<script lang="ts">
+    import ChessgroundAnalysis from "../../components/ChessgroundAnalysis.svelte";
+    import type { PageProps } from "./$types";
+
+    let { data }: PageProps = $props();
+
+	let chessGroundSize = "512px";
+
+</script>
+
+<br /><br />
+
+<ChessgroundAnalysis board="blue" pieces="merida" postPuzzleMessage={data.postPuzzleMessage} --chessgroundSize={chessGroundSize}/>
