@@ -3,6 +3,7 @@ let {buttonDefs}: {buttonDefs: {label: string, onclick: CallableFunction}[]} = $
 </script>
 
 <div id="chessgroundNavigationControls">
+    <!-- eslint-disable svelte/require-each-key -->
     {#each buttonDefs as btn}
         <button onclick={() => btn.onclick()} class="chessgroundCtrlButton">{btn.label}</button>
     {/each}
