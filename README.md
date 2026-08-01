@@ -32,7 +32,7 @@ DATABASE_PASSWORD=
 BACKEND_HOST=
 BACKEND_PORT=
 # and run
-source .env
+export $(cat .env | xargs)
 
 bin/rails db:create
 bin/rails db:migrate
@@ -49,6 +49,7 @@ bin/rails server
 
 ```bash
 cd prep-reps
+nvm use 25.2.1
 npm i
 npm run dev
 ```
