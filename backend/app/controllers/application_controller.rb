@@ -2,6 +2,7 @@
 # based on: https://oneuptime.com/blog/post/2026-01-26-ruby-rails-rest-api/view
 class ApplicationController < ActionController::API
     rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
+    rescue_from BCrypt::Errors::InvalidHash, with: :handle_decode_error
 
     # helper_method :current_user
     attr_reader :current_user
@@ -24,5 +25,10 @@ class ApplicationController < ActionController::API
     def handle_record_not_found(e)
         # TODO: migrate rescues to ./concerns?
         render json: { message: "User not found" }, status: :not_found
+    end
+
+    def handle_decode_error(e)
+        # TODO: migrate rescues to ./concerns?
+        render json: { message: "Invalid token" }, status: :unauthorized
     end
 end
