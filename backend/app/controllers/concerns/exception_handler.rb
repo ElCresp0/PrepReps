@@ -18,6 +18,7 @@ module ExceptionHandler
     rescue_from ExceptionHandler::AuthenticationError, with: :handle_unauthorized
     rescue_from ExceptionHandler::ExpiredToken, with: :handle_unauthorized
     rescue_from ExceptionHandler::InvalidToken, with: :handle_unauthorized
+    rescue_from BCrypt::Errors::InvalidHash, with: :handle_unauthorized
   end
 
   private
