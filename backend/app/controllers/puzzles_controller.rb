@@ -3,6 +3,7 @@
 
 class PuzzlesController < ApplicationController
     before_action :authenticate_request
+    rescue_from ActiveRecord::RecordNotUnique, with: :handle_duplicate_puzzle
 
     # GET /puzzles
     def index
@@ -22,9 +23,13 @@ class PuzzlesController < ApplicationController
         }, status: :created
     end
 
-  private
+    private
 
     def puzzles_params
         params.permit(:title, :pgn)
+    end
+
+    def handle_duplicate_puzzle(e)
+        render json: { message: "Puzzle with this title already exists" }, status: :conflict
     end
 end

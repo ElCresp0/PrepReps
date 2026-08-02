@@ -1,7 +1,7 @@
 # app/controllers/application_controller.rb
 # based on: https://oneuptime.com/blog/post/2026-01-26-ruby-rails-rest-api/view
 class ApplicationController < ActionController::API
-    rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
+    include ExceptionHandler
 
     # helper_method :current_user
     attr_reader :current_user
@@ -19,10 +19,5 @@ class ApplicationController < ActionController::API
         token = header.split(" ").last
         decoded = JsonWebToken.decode(token)
         User.find(decoded[:user_id])
-    end
-
-    def handle_record_not_found(e)
-        # TODO: migrate rescues to ./concerns?
-        render json: { message: "User not found" }, status: :not_found
     end
 end
