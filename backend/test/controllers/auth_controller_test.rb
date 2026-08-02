@@ -2,10 +2,6 @@ require "test_helper"
 
 class AuthControllerTest < ActionDispatch::IntegrationTest
 
-  setup do
-    post "/auth/sign_up", params: { name: "existing_user", password: "password" }, as: :json
-  end
-
   # sign_up
   test "should create a user" do
     assert_difference("User.count") do
