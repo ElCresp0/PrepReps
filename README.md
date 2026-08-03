@@ -45,6 +45,20 @@ bin/rails dbconsole
 bin/rails server
 ```
 
+## DB management
+
+```bash
+# backup
+DB_TO_BACKUP=backend_development
+BACKUP_NAME=dev_db_bkp.dump
+pg_dump -U $DATABASE_USERNAME -d $DB_TO_BACKUP --format=c > db/backups/$BACKUP_NAME
+
+# restore
+DB_TO_RESTORE=backend_development
+BACKUP_NAME=dev_db_bkp.dump
+pg_restore -U $DATABASE_USERNAME -d $DB_TO_RESTORE ./db/backups/$BACKUP_NAME
+```
+
 ## setup frontend
 
 ```bash
