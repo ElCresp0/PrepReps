@@ -14,6 +14,8 @@
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
     import { makeSan } from "chessops/san";
+    import { goto } from "$app/navigation";
+    import { resolve } from "$app/paths";
 
 
     function userMove(from: Key, to: Key):void {
@@ -51,7 +53,13 @@
         }
     }
 
-    let {board="blue", pieces="merida", puzzle, nextPuzzleFoo}: {board: string, pieces: string, puzzle: Puzzle, nextPuzzleFoo: CallableFunction} = $props();
+    function deletePuzzle() {
+        goto(resolve(`/train?delete=1&title=${puzzle.title}`));
+        nextPuzzleFoo();
+    }
+
+    // TODO: store session information like token in Svelte $store
+    let {board="blue", pieces="merida", puzzle, nextPuzzleFoo, signed_in}: {board: string, pieces: string, puzzle: Puzzle, nextPuzzleFoo: CallableFunction, signed_in: boolean} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let currentMove: number;
@@ -67,13 +75,23 @@
         "movable": {"color": chess.turn},
     });
     
-    let chessgroundButtons = $derived([
-        {onclick: firstMove, label: "<<"}, // &laquo;
-        {onclick: prevMove, label: "<"}, //&#8249;
-        {onclick: nextMove, label: ">"}, // &#8250;
-        {onclick: lastMove, label: ">>"}, // &raquo;
-        {onclick: nextPuzzleFoo, label: "Next Puzzle"},
-    ]);
+    let chessgroundButtons = $derived(
+        signed_in ? [
+            {onclick: firstMove, label: "<<"}, // &laquo;
+            {onclick: prevMove, label: "<"}, //&#8249;
+            {onclick: nextMove, label: ">"}, // &#8250;
+            {onclick: lastMove, label: ">>"}, // &raquo;
+            {onclick: nextPuzzleFoo, label: "Next"},
+            {onclick: deletePuzzle, label: "Delete"}
+        ]
+        : [
+            {onclick: firstMove, label: "<<"}, // &laquo;
+            {onclick: prevMove, label: "<"}, //&#8249;
+            {onclick: nextMove, label: ">"}, // &#8250;
+            {onclick: lastMove, label: ">>"}, // &raquo;
+            {onclick: nextPuzzleFoo, label: "Next"}
+        ]
+);
 
     let currentPgn = $derived(
         // makePgn(chess);
@@ -90,6 +108,8 @@
     })
 
 </script>
+
+<h2>{puzzle.title}</h2>
 
 <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>

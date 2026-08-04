@@ -25,7 +25,7 @@
 {:else if puzzleIndex === data.puzzles.length}
 	<p>That was your last puzzle! Refresh the page to start over.</p>
 {:else}
-	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} nextPuzzleFoo={nextPuzzle} --chessgroundSize={chessGroundSize}/>
+	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} nextPuzzleFoo={nextPuzzle} signed_in={data.signed_in} --chessgroundSize={chessGroundSize}/>
 {/if}
 
 <!-- TODO: all puzzles view -->

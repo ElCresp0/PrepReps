@@ -23,6 +23,14 @@ class PuzzlesController < ApplicationController
         }, status: :created
     end
 
+    # DELETE /puzzles
+    def delete
+        puzzle = current_user.puzzles.find_by!(title: puzzles_params[:title])
+        current_user.puzzles.destroy(puzzle[:id])
+
+        render json: {}, status: :ok
+    end
+
     private
 
     def puzzles_params

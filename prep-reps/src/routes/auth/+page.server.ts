@@ -1,15 +1,8 @@
 import { redirect, type Cookies } from "@sveltejs/kit";
-import { createUser, signIn } from "../../utils/BackendController";
+import { createUser, signIn, STATUS } from "../../utils/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
 
-enum STATUS {
-  OK = 200,
-  CREATED = 201,
-  ACCEPTED = 202,
-  NOT_MODIFIED = 304,
-  FOUND = 302,
-}
 
 export const load: PageServerLoad = (event) => {
   if (event.url.searchParams.get("signOut") !== null) {
