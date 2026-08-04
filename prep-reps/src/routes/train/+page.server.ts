@@ -1,6 +1,8 @@
-import { getPuzzles } from "../../utils/BackendController";
+import { redirect } from "@sveltejs/kit";
+import { getPuzzles, deletePuzzle, STATUS } from "../../utils/BackendController";
 import { Puzzle } from "../../utils/Puzzle";
 import type { PageServerLoad } from "./$types";
+import { resolve } from "$app/paths";
 
 const DEMO_PUZZLES = [
   new Puzzle(
@@ -14,9 +16,23 @@ const DEMO_PUZZLES = [
 ];
 
 export const load: PageServerLoad = async (event) => {
+  if (event.url.searchParams.get("delete") !== null && event.url.searchParams.get("title") !== null) {
+    let response = await deletePuzzle(event.cookies.get("token")!, event.url.searchParams.get("title")!);
+    if (response.status === STATUS.OK) {
+      console.info("redirect");
+      throw redirect(STATUS.SEE_OTHER, resolve("/train"));
+    }
+    else {
+      console.info(`another status: ${response.status}`);
+      throw redirect(STATUS.SEE_OTHER, resolve("/train"));
+    }
+    
+    // TODO: feedback in GUI
+  }
   return {
     puzzles: event.locals.token
       ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
       : DEMO_PUZZLES,
+    signed_in: (event.cookies.get("token") || "").length !== 0
   };
 };

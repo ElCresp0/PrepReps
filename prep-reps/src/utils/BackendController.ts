@@ -3,6 +3,16 @@ import {
   PUBLIC_BACKEND_PORT as BACKEND_PORT,
 } from "$env/static/public";
 
+
+export enum STATUS {
+  OK = 200,
+  CREATED = 201,
+  ACCEPTED = 202,
+  NOT_MODIFIED = 304,
+  FOUND = 302,
+  SEE_OTHER = 303
+}
+
 export async function createUser(credentials: {
   name: string;
   password: string;
@@ -106,4 +116,21 @@ export async function getPuzzles(
     );
     return undefined;
   }
+}
+
+export async function deletePuzzle(token: string, title: string): Promise<Response> {
+    const response = await fetch(
+      // TODO: check title for unexpected characters
+      `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles/${title}`,
+      {
+        method: "DELETE",
+        headers: [
+          ["Content-Type", "application/json"],
+          ["charset", "UTF-8"],
+          ["Authorization", `Bearer ${token}`],
+        ]
+      },
+    );
+
+    return response;
 }

@@ -28,7 +28,7 @@
             // redirect(200, "/auth?signOut=1");
         }
         username = data.username!;
-        userPuzzles = data.puzzles;
+        userPuzzles = data.puzzles || [];
 
         // localStorage.setItem("username", username);
         // localStorage.setItem("token", data.token!);

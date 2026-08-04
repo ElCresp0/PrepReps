@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   # Puzzles
   get "/puzzles" => "puzzles#index"
   post "/puzzles" => "puzzles#create"
+  delete "/puzzles/:title" => "puzzles#delete"
 
   # Defines the root path route ("/")
   # root "posts#index"
