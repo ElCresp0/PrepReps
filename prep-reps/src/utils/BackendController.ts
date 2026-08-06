@@ -3,14 +3,13 @@ import {
   PUBLIC_BACKEND_PORT as BACKEND_PORT,
 } from "$env/static/public";
 
-
 export enum STATUS {
   OK = 200,
   CREATED = 201,
   ACCEPTED = 202,
   NOT_MODIFIED = 304,
   FOUND = 302,
-  SEE_OTHER = 303
+  SEE_OTHER = 303,
 }
 
 export async function createUser(credentials: {
@@ -93,7 +92,7 @@ export async function postPuzzle(
 
 export async function getPuzzles(
   token: string,
-): Promise<{ title: string; pgn: string, id: string }[] | undefined> {
+): Promise<{ title: string; pgn: string; id: string }[] | undefined> {
   try {
     const response = await fetch(
       `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles`,
@@ -118,19 +117,22 @@ export async function getPuzzles(
   }
 }
 
-export async function deletePuzzle(token: string, puzzle_id: string): Promise<Response> {
-    const response = await fetch(
-      // TODO: check title for unexpected characters
-      `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles/${puzzle_id}`,
-      {
-        method: "DELETE",
-        headers: [
-          ["Content-Type", "application/json"],
-          ["charset", "UTF-8"],
-          ["Authorization", `Bearer ${token}`],
-        ]
-      },
-    );
+export async function deletePuzzle(
+  token: string,
+  puzzle_id: string,
+): Promise<Response> {
+  const response = await fetch(
+    // TODO: check title for unexpected characters
+    `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles/${puzzle_id}`,
+    {
+      method: "DELETE",
+      headers: [
+        ["Content-Type", "application/json"],
+        ["charset", "UTF-8"],
+        ["Authorization", `Bearer ${token}`],
+      ],
+    },
+  );
 
-    return response;
+  return response;
 }

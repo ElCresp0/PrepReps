@@ -3,7 +3,6 @@ import { createUser, signIn, STATUS } from "../../utils/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
 
-
 export const load: PageServerLoad = (event) => {
   if (event.url.searchParams.get("signOut") !== null) {
     signOut(event.cookies);

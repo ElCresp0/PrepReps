@@ -35,7 +35,7 @@ export class Puzzle {
     }
   }
 
-  public serialize(): { title: string, pgn: string, id: string } {
+  public serialize(): { title: string; pgn: string; id: string } {
     const game = defaultGame<PgnNodeData>();
     game.headers.set("FEN", this.fen);
 
