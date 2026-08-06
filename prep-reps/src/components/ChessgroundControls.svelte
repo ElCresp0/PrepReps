@@ -7,22 +7,40 @@ interface IButtonLabel {
     dropdown?: {label: string, onclick: CallableFunction}[]
 }
 let {buttonDefs}: {buttonDefs: IButtonLabel[]} = $props();
-let displayNone = $state(
-    // svelte-ignore state_referenced_locally
-    buttonDefs.map((btn: IButtonLabel) => {
-        return btn.dropdown === undefined ?
-            {displayNone: false} :
-            {displayNone: true}
-    })
-);
 
+let displayNone = $state([] as {displayNone: boolean}[]);
+let topLevelButtons = [] as HTMLElement[];
+
+
+// svelte-ignore state_referenced_locally
+displayNone = buttonDefs.map((btn: IButtonLabel) => {
+    return btn.dropdown === undefined ?
+        {displayNone: false} :
+        {displayNone: true}
+});
+
+function clickedElement(element: HTMLElement, event: MouseEvent) {
+    return event.target instanceof Node && element.contains(event.target);
+}
+
+function documentOnClick(event: MouseEvent) {
+    console.log("clicked");
+    displayNone.forEach((_, index: number) => {
+        // hide if clicked outside of a top level button,
+        if (clickedElement(topLevelButtons[index], event) === false) {
+            displayNone[index].displayNone = true;
+        }
+    });
+}
 </script>
+
+<svelte:document on:click={documentOnClick} />
 
 <div id="chessgroundNavigationControls">
     <!-- eslint-disable svelte/require-each-key -->
     {#each buttonDefs as btn, index}
         {#if btn.onclick !== undefined}
-            <button onclick={() => btn.onclick!()}
+            <button bind:this={topLevelButtons[index]} onclick={() => btn.onclick!()}
                     class="chessgroundCtrlButton">
                 {#if btn.label.startsWith("mdi-")}
                     <Icon icon="mdi-light:{btn.label.substring(4)}" style="font-size: 1.5em;"/>
@@ -33,7 +51,7 @@ let displayNone = $state(
         {:else if btn.dropdown !== undefined}
             <ul class="dropdownButtons">
                 <li>
-                    <button onclick={() => {displayNone[index].displayNone = !displayNone[index].displayNone}}
+                   <button bind:this={topLevelButtons[index]} onclick={() => {displayNone[index].displayNone = !displayNone[index].displayNone}}
                             class="chessgroundCtrlButton">
                         {#if btn.label.startsWith("mdi-")}
                             <Icon icon="mdi-light:{btn.label.substring(4)}" style="font-size: 1.5em;"/>
