@@ -81,8 +81,14 @@
             {onclick: prevMove, label: "<"}, //&#8249;
             {onclick: nextMove, label: ">"}, // &#8250;
             {onclick: lastMove, label: ">>"}, // &raquo;
+            {dropdown:
+                [
+                    {onclick: deletePuzzle, label: "Delete"},
+                    // {onclick: editPuzzle, label: "Edit"},
+                ],
+                label: "mdi-settings",
+            },
             {onclick: nextPuzzleFoo, label: "Next"},
-            {onclick: deletePuzzle, label: "Delete"}
         ]
         : [
             {onclick: firstMove, label: "<<"}, // &laquo;
