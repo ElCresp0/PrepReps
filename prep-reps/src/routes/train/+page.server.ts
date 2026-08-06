@@ -8,16 +8,18 @@ const DEMO_PUZZLES = [
   new Puzzle(
     "Puzzle1",
     '[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]\n\n 1. e4 c5 2. Nf3',
+    ""
   ).serialize(),
   new Puzzle(
     "Puzzle1",
     '[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]\n\n 1. e4 c5 2. Nh3',
+    ""
   ).serialize(),
 ];
 
 export const load: PageServerLoad = async (event) => {
-  if (event.url.searchParams.get("delete") !== null && event.url.searchParams.get("title") !== null) {
-    let response = await deletePuzzle(event.cookies.get("token")!, event.url.searchParams.get("title")!);
+  if (event.url.searchParams.get("delete") !== null && event.url.searchParams.get("puzzle_id") !== null) {
+    let response = await deletePuzzle(event.cookies.get("token")!, event.url.searchParams.get("puzzle_id")!);
     if (response.status === STATUS.OK) {
       console.info("redirect");
       throw redirect(STATUS.SEE_OTHER, resolve("/train"));

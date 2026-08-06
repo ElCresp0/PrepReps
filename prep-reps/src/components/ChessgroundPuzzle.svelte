@@ -54,7 +54,7 @@
     }
 
     function deletePuzzle() {
-        goto(resolve(`/train?delete=1&title=${puzzle.title}`));
+        goto(resolve(`/train?delete=1&puzzle_id=${puzzle.id}`));
         nextPuzzleFoo();
     }
 

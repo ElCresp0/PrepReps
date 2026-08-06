@@ -93,7 +93,7 @@ export async function postPuzzle(
 
 export async function getPuzzles(
   token: string,
-): Promise<{ title: string; pgn: string }[] | undefined> {
+): Promise<{ title: string; pgn: string, id: string }[] | undefined> {
   try {
     const response = await fetch(
       `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles`,
@@ -118,10 +118,10 @@ export async function getPuzzles(
   }
 }
 
-export async function deletePuzzle(token: string, title: string): Promise<Response> {
+export async function deletePuzzle(token: string, puzzle_id: string): Promise<Response> {
     const response = await fetch(
       // TODO: check title for unexpected characters
-      `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles/${title}`,
+      `http://${BACKEND_HOST}:${BACKEND_PORT}/puzzles/${puzzle_id}`,
       {
         method: "DELETE",
         headers: [
