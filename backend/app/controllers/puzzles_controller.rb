@@ -25,8 +25,8 @@ class PuzzlesController < ApplicationController
 
     # DELETE /puzzles
     def delete
-        puzzle = current_user.puzzles.find_by!(title: puzzles_params[:title])
-        current_user.puzzles.destroy(puzzle[:id])
+        puzzle = current_user.puzzles.find_by!(id: puzzles_params[:puzzle_id])
+        current_user.puzzles.destroy(puzzles_params[:puzzle_id])
 
         render json: {}, status: :ok
     end
@@ -34,7 +34,7 @@ class PuzzlesController < ApplicationController
     private
 
     def puzzles_params
-        params.permit(:title, :pgn)
+        params.permit(:title, :pgn, :puzzle_id)
     end
 
     def handle_duplicate_puzzle(e)
