@@ -8,7 +8,7 @@
 	let { data }: PageProps = $props();
 
 	let puzzleIndex = $state(0);
-	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? new Puzzle(data.puzzles[puzzleIndex].title, data.puzzles[puzzleIndex].pgn) : null);
+	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? new Puzzle(data.puzzles[puzzleIndex].title, data.puzzles[puzzleIndex].pgn, data.puzzles[puzzleIndex].id) : null);
 	let chessGroundSize = "512px";
 
 	function nextPuzzle() {

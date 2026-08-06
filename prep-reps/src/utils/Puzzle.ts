@@ -14,14 +14,16 @@ export class Puzzle {
   public title: string;
   public fen: FEN;
   public moves: NormalMove[];
+  public id: string;
 
-  constructor(title: string, pgn: string) {
+  constructor(title: string, pgn: string, id: string) {
     const game = parsePgn(pgn)[0];
     console.debug("game:", game);
 
     this.title = title;
     this.fen = game.headers.get("FEN") || makeFen(defaultSetup());
     this.moves = [];
+    this.id = id;
 
     const chess = Chess.fromSetup(parseFen(this.fen).unwrap()).unwrap();
     let currentMove = game.moves.children[0];
@@ -33,7 +35,7 @@ export class Puzzle {
     }
   }
 
-  public serialize(): { title: string; pgn: string } {
+  public serialize(): { title: string; pgn: string; id: string } {
     const game = defaultGame<PgnNodeData>();
     game.headers.set("FEN", this.fen);
 
@@ -52,6 +54,6 @@ export class Puzzle {
     game.moves.children.push(rootMove);
 
     const pgn = makePgn(game);
-    return { title: this.title, pgn: pgn };
+    return { title: this.title, pgn: pgn, id: this.id };
   }
 }

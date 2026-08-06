@@ -6,6 +6,7 @@ class PuzzleSerializer
 
   def as_json
     {
+      id: @puzzle.id,
       title: @puzzle.title,
       pgn: @puzzle.pgn
     }

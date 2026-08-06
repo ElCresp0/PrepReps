@@ -3,3 +3,8 @@ one:
   title: 'existing title'
   pgn: '1. e4 e6'
   user: one
+
+two:
+  title: 'another existing title'
+  pgn: '1. e4 e6'
+  user: one

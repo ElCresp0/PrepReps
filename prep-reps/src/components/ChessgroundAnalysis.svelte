@@ -99,7 +99,6 @@
 
     $effect(() => {
         // updating the puzzle prop triggers this event
-        $inspect(playedMoves); // logging
         ground.set(config);
     })
 

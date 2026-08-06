@@ -54,7 +54,7 @@
     }
 
     function deletePuzzle() {
-        goto(resolve(`/train?delete=1&title=${puzzle.title}`));
+        goto(resolve(`/train?delete=1&puzzle_id=${puzzle.id}`));
         nextPuzzleFoo();
     }
 
@@ -81,8 +81,14 @@
             {onclick: prevMove, label: "<"}, //&#8249;
             {onclick: nextMove, label: ">"}, // &#8250;
             {onclick: lastMove, label: ">>"}, // &raquo;
+            {dropdown:
+                [
+                    {onclick: deletePuzzle, label: "Delete"},
+                    // {onclick: editPuzzle, label: "Edit"},
+                ],
+                label: "mdi-settings",
+            },
             {onclick: nextPuzzleFoo, label: "Next"},
-            {onclick: deletePuzzle, label: "Delete"}
         ]
         : [
             {onclick: firstMove, label: "<<"}, // &laquo;
@@ -104,7 +110,6 @@
         playedMoves = [];
         fenHistory = [puzzle.fen];
         currentMove = 0;
-        $inspect(playedMoves); // logging
     })
 
 </script>

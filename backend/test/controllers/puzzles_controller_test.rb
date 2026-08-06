@@ -16,7 +16,7 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
 
     data = JSON.parse(response.body)
-    assert data["puzzles"].length == 1
+    assert data["puzzles"].length == puzzles.length
 
   end
 
@@ -50,6 +50,25 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
       post "/puzzles", headers: { Authorization: "Bearer #{@token}" }, params: { title: "existing title", pgn: "1. c4 g6" }, as: :json
     end
     assert_response :conflict
+  end
+
+  # delete a puzzle
+  test "should delete the first puzzle" do
+    get "/puzzles", headers: { Authorization: "Bearer #{@token}" }, as: :json
+    assert_response :ok
+    data = JSON.parse(response.body)
+    puzzle_id = data["puzzles"][0]["id"]
+    puzzles_count = data["puzzles"].length
+
+    delete "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, as: :json
+    assert_response :ok
+
+    get "/puzzles", headers: { Authorization: "Bearer #{@token}" }, as: :json
+    assert_response :ok
+    data = JSON.parse(response.body)
+    puzzles_count_after_delete = data["puzzles"].length
+
+    assert puzzles_count_after_delete == puzzles_count - 1
   end
 
 end
