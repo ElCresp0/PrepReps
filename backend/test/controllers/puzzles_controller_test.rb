@@ -69,15 +69,12 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
 
   # update a puzzle title (success)
   test "should update title and pgn of the first puzzle" do
-    get "/puzzles", headers: { Authorization: "Bearer #{@token}" }, as: :json
-    assert_response :ok
-    data = JSON.parse(response.body)
-    first_puzzle = data["puzzles"][0]
-
+    first_puzzle = puzzles[0]
     puzzle_id = first_puzzle["id"]
     puzzle_title = first_puzzle["title"]
+    puzzle_pgn = first_puzzle["pgn"]
     new_puzzle_title = puzzle_title + "_UPDATED"
-    new_puzzle_pgn = first_puzzle["pgn"] + "\n\n"
+    new_puzzle_pgn = puzzle_pgn + "\n\n"
 
     patch "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, params: { title: new_puzzle_title, pgn: new_puzzle_pgn }, as: :json
     
@@ -98,10 +95,71 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
   end
   
   # update a puzzle (unauthorized)
+  test "shouldn't update title and pgn of the first puzzle (unauthorized)" do
+    first_puzzle = puzzles[0]
+    puzzle_id = first_puzzle["id"]
+    original_puzzle_title = first_puzzle["title"]
+    original_puzzle_pgn = first_puzzle["pgn"]
+    new_puzzle_title = original_puzzle_title + "_UPDATED"
+    new_puzzle_pgn = original_puzzle_pgn + "\n\n"
+
+    patch "/puzzles/#{puzzle_id}", params: { title: new_puzzle_title, pgn: new_puzzle_pgn }, as: :json
+    
+    assert_response :unauthorized
+
+    # no changes expected
+    get "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, as: :json
+
+    assert_response :ok
+    data = JSON.parse(response.body)
+    assert data["id"] == puzzle_id
+    assert data["title"] == original_puzzle_title
+    assert data["pgn"] == original_puzzle_pgn
+  end
 
   # update a puzzle title (duplicate title)
+  test "shouldn't update title and pgn of the first puzzle (duplicate title)" do
+    first_puzzle = puzzles[0]
+    second_puzzle = puzzles[1]
+
+    puzzle_id = first_puzzle["id"]
+    original_puzzle_title = first_puzzle["title"]
+    original_puzzle_pgn = first_puzzle["pgn"]
+    new_puzzle_title = second_puzzle["title"]
+    new_puzzle_pgn = original_puzzle_pgn + "\n\n"
+
+    patch "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, params: { title: new_puzzle_title, pgn: new_puzzle_pgn }, as: :json
+    
+    assert_response :conflict
+
+    # no changes expected
+    get "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, as: :json
+
+    assert_response :ok
+    data = JSON.parse(response.body)
+    assert data["id"] == puzzle_id
+    assert data["title"] == original_puzzle_title
+    assert data["pgn"] == original_puzzle_pgn
+  end
 
   # update a puzzle title (puzzle not found)
+  test "shouldn't update title and pgn of the first puzzle (puzzle not found)" do
+    first_puzzle = puzzles[0]
+
+    puzzle_id = 2
+    while (puzzles.any? { |puzzle| puzzle["id"] == puzzle_id} ) do
+      puzzle_id **= 2
+    end
+
+    original_puzzle_title = first_puzzle["title"]
+    original_puzzle_pgn = first_puzzle["pgn"]
+    new_puzzle_title = original_puzzle_title + "_UPDATED"
+    new_puzzle_pgn = original_puzzle_pgn + "\n\n"
+
+    patch "/puzzles/#{puzzle_id}", headers: { Authorization: "Bearer #{@token}" }, params: { title: new_puzzle_title, pgn: new_puzzle_pgn }, as: :json
+    
+    assert_response :not_found
+  end
 
   # delete a puzzle
   test "should delete the first puzzle" do
