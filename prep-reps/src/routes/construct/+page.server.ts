@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { postPuzzle } from "../../utils/BackendController";
+import { postPuzzle } from "../../utils/controllers/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
 

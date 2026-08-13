@@ -3,7 +3,7 @@
     import { Puzzle } from "../utils/Puzzle";
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import { ChessgroundPuzzleController } from "../utils/ChessgroundPuzzleController.svelte";
+    import { ChessgroundPuzzleController } from "../utils/controllers/ChessgroundPuzzleController.svelte";
     import type { Api } from "@lichess-org/chessground/api";
 
 

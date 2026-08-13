@@ -1,11 +1,7 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
+    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
 
-interface IButtonLabel {
-    label: string,
-    onclick?: CallableFunction,
-    dropdown?: {label: string, onclick: CallableFunction}[]
-}
 let {buttonDefs}: {buttonDefs: IButtonLabel[]} = $props();
 
 let displayNone = $state([] as {displayNone: boolean}[]);
@@ -24,7 +20,6 @@ function clickedElement(element: HTMLElement, event: MouseEvent) {
 }
 
 function documentOnClick(event: MouseEvent) {
-    console.log("clicked");
     displayNone.forEach((_, index: number) => {
         // hide if clicked outside of a top level button,
         if (clickedElement(topLevelButtons[index], event) === false) {

@@ -12,7 +12,6 @@
 	let puzzleIndex = $state(0);
 	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? new Puzzle(data.puzzles[puzzleIndex].title, data.puzzles[puzzleIndex].pgn, data.puzzles[puzzleIndex].id) : null);
 	let chessGroundSize = "512px";
-	let move = $state(0);
 
 	function nextPuzzle() {
 		puzzleIndex++;
@@ -24,35 +23,9 @@
         nextPuzzle();
     }
 
-	function firstMove() {
-		move = 0;
-	}
-
-	function prevMove() {
-		move = move <= 0 ? 0 : move - 1;
-	}
-
-	function nextMove() {
-		if (puzzle !== null && move >= puzzle.moves.length) {
-			move = puzzle.moves.length;
-		}
-		else {
-			move++;
-		}
-	}
-
-	function lastMove() {
-		if (puzzle !== null) {
-			move = puzzle.moves.length;
-		}
-	}
-
+	// TODO: move navigation
 	let chessgroundButtons = $derived(
         data.signed_in ? [
-            {onclick: firstMove, label: "<<"}, // &laquo;
-            {onclick: prevMove, label: "<"}, //&#8249;
-            {onclick: nextMove, label: ">"}, // &#8250;
-            {onclick: lastMove, label: ">>"}, // &raquo;
             {dropdown:
                 [
                     {onclick: deletePuzzle, label: "Delete"},
@@ -63,10 +36,6 @@
             {onclick: nextPuzzle, label: "Next"},
         ]
         : [
-            {onclick: firstMove, label: "<<"}, // &laquo;
-            {onclick: prevMove, label: "<"}, //&#8249;
-            {onclick: nextMove, label: ">"}, // &#8250;
-            {onclick: lastMove, label: ">>"}, // &raquo;
             {onclick: nextPuzzle, label: "Next"}
         ]
     );

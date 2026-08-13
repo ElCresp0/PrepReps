@@ -1,105 +1,30 @@
 <script lang="ts">
     import { Chessground } from "@lichess-org/chessground";
-	import type { Key } from "@lichess-org/chessground/types";
-	import type { Config } from "@lichess-org/chessground/config";
 	import type { Api } from "@lichess-org/chessground/api";
-    import { Chess, defaultSetup, type NormalMove } from "chessops";
-    import { makeBoardFen, makeFen } from "chessops/fen";
-    import { parseSquare } from "chessops/util";
-    import { chessgroundMove } from "chessops/compat";
     import ChessgroundControls from "./ChessgroundControls.svelte";
-    import { firstMove, lastMove, nextMove, prevMove } from "../utils/ChessUtils";
 
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import { makeSan } from "chessops/san";
+    import { ChessgroundController } from "../utils/controllers/ChessgroundController.svelte";
     import { onMount } from "svelte";
-    import { ChildNode, defaultGame, makePgn, type PgnNodeData } from "chessops/pgn";
     import { enhance } from "$app/forms";
+    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
 
-    function userMove(from: Key, to: Key):void {
-
-        let move = {from: parseSquare(from), to: parseSquare(to)} as NormalMove;
-
-        if (chessLogic.isLegal(move)) {
-            console.debug("Correct move!", makeSan(Chess.fromSetup(chess).unwrap(), move));
-
-            const newMove = new ChildNode<PgnNodeData>({
-                san: makeSan(chessLogic, move),
-            });
-
-            // push move to game tree
-            if (currentMoveNode === null) {
-                // first move = root
-                chessGame.moves.children.push(newMove);
-                currentMoveNode = newMove;
-            }
-            else {
-                currentMoveNode!.children.push(newMove);
-                currentMoveNode = newMove;
-            }
-
-            // update all objects
-            chessLogic.play(move);
-            playedMoves.push(move);
-            fenHistory.push(makeFen(chessLogic.toSetup()));
-            currentPgn = makePgn(chessGame);
-            console.debug("turn:", chessLogic.turn);
-            ground.set({
-                "movable": {"color": chessLogic.turn},
-            });
-
-        }
-        else {
-            console.debug("Incorrect move!", move, {"color": chessLogic.turn});
-            ground.set({
-                "fen": makeFen(chessLogic.toSetup()),
-                "movable": {"color": chessLogic.turn},
-                "turnColor": chessLogic.turn,
-                "lastMove": playedMoves.length > 0 ? chessgroundMove(playedMoves[playedMoves.length - 1]) : undefined,
-            })
-        }
-    }
 
     let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
-    let playedMoves: NormalMove[] = $state([]);
-    let fenHistory: string[] = [];
-    let currentMoveNode: ChildNode<PgnNodeData>|null = $state(null);
-
-    // TODO: set FEN from text field
-    // TODO: set PGN from text field
-    let chess = $state(defaultSetup());
-    let chessLogic = $derived(Chess.fromSetup(chess).unwrap());
-    let chessGame = defaultGame<PgnNodeData>();
-
-    let config: Config = $derived({
-        "fen": makeBoardFen(chess.board),
-        "events": {
-            "move": userMove,
-        },
-        "movable": {"color": chess.turn},
-    });
+    let chessgroundController: ChessgroundController | undefined = $state();
     
-    let chessgroundButtons = $derived([
-        {onclick: firstMove, label: "<<"}, // &laquo;
-        {onclick: prevMove, label: "<"}, //&#8249;
-        {onclick: nextMove, label: ">"}, // &#8250;
-        {onclick: lastMove, label: ">>"}, // &raquo;
-    ]);
-
-    let currentPgn = $state("");
+    let chessgroundButtons: IButtonLabel[] = $state([]);
 
     onMount(() => {
-        playedMoves = [];
-        fenHistory = [makeFen(chess)];
-        ground = Chessground(chessDiv!, config);
-    })
-
-    $effect(() => {
-        // updating the puzzle prop triggers this event
-        ground.set(config);
+        ground = Chessground(chessDiv!);
+        chessgroundController = new ChessgroundController(ground);
+        chessgroundButtons.push({label: "<<", onclick: chessgroundController.firstMove});
+        chessgroundButtons.push({label: "<", onclick: chessgroundController.prevMove});
+        chessgroundButtons.push({label: ">", onclick: chessgroundController.nextMove});
+        chessgroundButtons.push({label: ">>", onclick: chessgroundController.lastMove});
     })
 
 </script>
@@ -116,7 +41,7 @@
     </div>
     <div class="form-group">
         <label for="pgn">pgn</label>
-        <input name="pgn" type="pgn" id="pgn" value={currentPgn}>
+        <input name="pgn" type="pgn" id="pgn" value={chessgroundController?.currentPgn}>
     </div>
     <button type="submit" formaction="?/postPuzzle">Save</button>
 </form>

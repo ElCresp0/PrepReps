@@ -3,7 +3,7 @@ import {
   getPuzzles,
   deletePuzzle,
   STATUS,
-} from "../../utils/BackendController";
+} from "../../utils/controllers/BackendController";
 import { Puzzle } from "../../utils/Puzzle";
 import type { PageServerLoad } from "./$types";
 import { resolve } from "$app/paths";
