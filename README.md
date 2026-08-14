@@ -72,7 +72,11 @@ npm run dev
 
 * navigating through played moves
   * bind move tree navigation buttons with keyboard arrows
+    * `/construct`: firstMove, LastMove
+    * `/train`: firstMove, prevMove, nextMove, LastMove
   * make currentPgn a list (tree) of clickable nodes
-* move tree logic with sidelines
+* specific chess game logic
+  * promotions
+  * en passant
 * DB with puzzle library (Create-Read for starters)
 * side panel to navigate through puzzles

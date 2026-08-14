@@ -8,7 +8,7 @@ import { chessgroundMove } from "chessops/compat";
 
 import "$lib/assets/Chessground/chessground.css";
 import "$lib/assets/Chessground/theme.css";
-import { makeSan } from "chessops/san";
+import { makeSan, parseSan } from "chessops/san";
 import {
   ChildNode,
   Node,
@@ -101,6 +101,7 @@ export class ChessgroundController {
       console.debug("turn:", this.chessLogic.turn);
       this.ground.set({
         movable: { color: this.chessLogic.turn },
+        turnColor: this.chessLogic.turn,
       });
     } else {
       console.debug("Incorrect move!", move, { color: this.chessLogic.turn });
@@ -126,7 +127,11 @@ export class ChessgroundController {
   };
 
   nextMove = () => {
-    console.log("nextMove");
+    const nextMove = Array.from(this.currentMoveNode.mainline()).at(0);
+    if (nextMove !== undefined) {
+      const cgMove = chessgroundMove(parseSan(this.chessLogic, nextMove.san)!);
+      this.ground.move(cgMove[0], cgMove[1]);
+    }
   };
 
   lastMove = () => {
