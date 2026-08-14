@@ -27,13 +27,14 @@ export class ChessgroundController {
   private chessGame: Game<PgnNodeData>;
   private chessLogic: Chess;
   public currentPgn: string = $state("");
-  private currentMoveNode: Node<PgnNodeData> | null = null;
+  private currentMoveNode: Node<PgnNodeData>;
 
   constructor(ground: Api, fen: string = INITIAL_FEN) {
     this.initialFen = fen;
     this.chessGame = defaultGame<PgnNodeData>(
       () => new SvelteMap<string, string>([["FEN", this.initialFen]]),
     );
+    this.currentMoveNode = this.chessGame.moves;
     this.chessLogic = Chess.fromSetup(
       parseFen(this.initialFen).unwrap(),
     ).unwrap();
@@ -57,8 +58,9 @@ export class ChessgroundController {
     this.currentMoveNode = this.chessGame.moves;
 
     for (const move of this.currentLine) {
+      const san = makeSan(this.chessLogic, move);
       this.currentMoveNode = this.currentMoveNode!.children.find((child) => {
-        return child.data.san === makeSan(this.chessLogic, move);
+        return child.data.san === san;
       })!;
       this.chessLogic.play(move);
     }
@@ -79,21 +81,18 @@ export class ChessgroundController {
     const move = { from: parseSquare(from), to: parseSquare(to) } as NormalMove;
 
     if (this.chessLogic.isLegal(move)) {
-      console.debug("Correct move!", makeSan(this.chessLogic, move));
+      const san = makeSan(this.chessLogic, move);
+      // check if the played move is already present in the move tree
+      let newMove = this.currentMoveNode?.children.find((child) => {return child.data.san === san})
+      if (newMove === undefined) {
+        newMove = new ChildNode<PgnNodeData>({
+          san: san,
+        });
 
-      const newMove = new ChildNode<PgnNodeData>({
-        san: makeSan(this.chessLogic, move),
-      });
-
-      // push move to game tree
-      if (this.currentMoveNode === null) {
-        // first move = root
-        this.chessGame.moves.children.push(newMove);
-        this.currentMoveNode = newMove;
-      } else {
+        // push move to game tree
         this.currentMoveNode!.children.push(newMove);
-        this.currentMoveNode = newMove;
       }
+      this.currentMoveNode = newMove;
 
       // update all objects
       this.chessLogic.play(move);
