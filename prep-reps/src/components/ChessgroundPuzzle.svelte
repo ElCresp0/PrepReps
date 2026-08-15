@@ -5,12 +5,24 @@
     import "$lib/assets/Chessground/theme.css";
     import { ChessgroundPuzzleController } from "../utils/controllers/ChessgroundPuzzleController.svelte";
     import type { Api } from "@lichess-org/chessground/api";
+    import ChessgroundControls from "./ChessgroundControls.svelte";
+    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
 
 
-    let {board="blue", pieces="merida", puzzle}: {board: string, pieces: string, puzzle: Puzzle} = $props();
+    let {board="blue", pieces="merida", puzzle, buttonDefs}: {board: string, pieces: string, puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();
     let chessDiv: HTMLElement;
     let puzzleController: ChessgroundPuzzleController | undefined = $state();
     let ground: Api;
+
+    let chessgroundButtons: IButtonLabel[] = $derived(
+        [
+            ...buttonDefs,
+            {label: "<<", onclick: puzzleController?.firstMove},
+            {label: "<", onclick: puzzleController?.prevMove},
+            {label: ">", onclick: puzzleController?.nextMove},
+            {label: ">>", onclick: puzzleController?.lastMove},
+        ]
+    );
 
     $effect(() => {
         ground = Chessground(chessDiv!);
@@ -27,6 +39,8 @@
 <div class="chessground-puzzle-horizontal-box">
     <p>{puzzleController?.currentPgn}</p>
 </div>
+
+<ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
 
 <style>
     #chessDiv {

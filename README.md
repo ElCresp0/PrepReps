@@ -72,8 +72,9 @@ npm run dev
 
 - navigating through played moves
   - bind move tree navigation buttons with keyboard arrows
-    - `/train`: firstMove, prevMove, nextMove, LastMove
   - make currentPgn a list (tree) of clickable nodes
+- hint button in `\train`
+- `\train` reset position on NextPuzzle()
 - specific chess game logic
   - promotions
   - en passant

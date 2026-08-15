@@ -3,7 +3,6 @@
     import type { PageProps } from "./$types";
 	import ChessgroundPuzzle from "../../components/ChessgroundPuzzle.svelte";
 	import { Puzzle } from "../../utils/Puzzle";
-    import ChessgroundControls from "../../components/ChessgroundControls.svelte";
     import { goto } from "$app/navigation";
 
 
@@ -49,8 +48,7 @@
 {:else if puzzleIndex === data.puzzles.length}
 	<p>That was your last puzzle! Refresh the page to start over.</p>
 {:else}
-	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} --chessgroundSize={chessGroundSize}/>
-	<ChessgroundControls buttonDefs={chessgroundButtons} --chessgroundSize={chessGroundSize} --buttonsCount={chessgroundButtons.length}/>
+	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} buttonDefs={chessgroundButtons} --chessgroundSize={chessGroundSize}/>
 {/if}
 
 <!-- TODO: all puzzles view -->

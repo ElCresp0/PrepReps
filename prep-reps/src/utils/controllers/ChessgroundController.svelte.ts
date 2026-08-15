@@ -20,17 +20,17 @@ import {
 import { SvelteMap } from "svelte/reactivity";
 
 export class ChessgroundController {
-  private ground: Api;
-  private currentLine: NormalMove[] = [];
-  private initialFen: string;
-  private config: Config;
-  private chessGame: Game<PgnNodeData>;
-  private chessLogic: Chess;
+  protected currentLine: NormalMove[] = [];
+  protected config: Config;
+  protected chessGame: Game<PgnNodeData>;
+  protected chessLogic: Chess;
   public currentPgn: string = $state("");
-  private currentMoveNode: Node<PgnNodeData>;
+  protected currentMoveNode: Node<PgnNodeData>;
 
-  constructor(ground: Api, fen: string = INITIAL_FEN) {
-    this.initialFen = fen;
+  constructor(
+    protected ground: Api,
+    protected initialFen: string = INITIAL_FEN,
+  ) {
     this.chessGame = defaultGame<PgnNodeData>(
       () => new SvelteMap<string, string>([["FEN", this.initialFen]]),
     );
@@ -39,6 +39,7 @@ export class ChessgroundController {
       parseFen(this.initialFen).unwrap(),
     ).unwrap();
 
+    this.userMove = this.userMove.bind(this);
     this.config = {
       fen: makeFen(this.chessLogic.toSetup()),
       events: {
@@ -46,7 +47,6 @@ export class ChessgroundController {
       },
       movable: { color: this.chessLogic.turn },
     };
-    this.ground = ground;
     this.ground.set(this.config);
   }
 
@@ -77,7 +77,7 @@ export class ChessgroundController {
     });
   }
 
-  userMove = (from: Key, to: Key) => {
+  userMove(from: Key, to: Key) {
     const move = { from: parseSquare(from), to: parseSquare(to) } as NormalMove;
 
     if (this.chessLogic.isLegal(move)) {
@@ -116,7 +116,7 @@ export class ChessgroundController {
             : undefined,
       });
     }
-  };
+  }
 
   firstMove = () => {
     this.currentLine = [];
