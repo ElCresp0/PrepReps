@@ -68,15 +68,14 @@ npm i
 npm run dev
 ```
 
-# TODO
+## TODO
 
-* navigating through played moves
-  * bind move tree navigation buttons with keyboard arrows
-    * `/construct`: firstMove, LastMove
-    * `/train`: firstMove, prevMove, nextMove, LastMove
-  * make currentPgn a list (tree) of clickable nodes
-* specific chess game logic
-  * promotions
-  * en passant
-* DB with puzzle library (Create-Read for starters)
-* side panel to navigate through puzzles
+- navigating through played moves
+  - bind move tree navigation buttons with keyboard arrows
+    - `/train`: firstMove, prevMove, nextMove, LastMove
+  - make currentPgn a list (tree) of clickable nodes
+- specific chess game logic
+  - promotions
+  - en passant
+- DB with puzzle library (Create-Read for starters)
+- side panel to navigate through puzzles

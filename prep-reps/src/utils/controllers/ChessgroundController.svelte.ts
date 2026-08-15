@@ -83,7 +83,9 @@ export class ChessgroundController {
     if (this.chessLogic.isLegal(move)) {
       const san = makeSan(this.chessLogic, move);
       // check if the played move is already present in the move tree
-      let newMove = this.currentMoveNode?.children.find((child) => {return child.data.san === san})
+      let newMove = this.currentMoveNode?.children.find((child) => {
+        return child.data.san === san;
+      });
       if (newMove === undefined) {
         newMove = new ChildNode<PgnNodeData>({
           san: san,
@@ -98,7 +100,6 @@ export class ChessgroundController {
       this.chessLogic.play(move);
       this.currentLine.push(move);
       this.currentPgn = makePgn(this.chessGame);
-      console.debug("turn:", this.chessLogic.turn);
       this.ground.set({
         movable: { color: this.chessLogic.turn },
         turnColor: this.chessLogic.turn,
@@ -118,7 +119,8 @@ export class ChessgroundController {
   };
 
   firstMove = () => {
-    console.log("firstMove");
+    this.currentLine = [];
+    this.reloadAllObjects();
   };
 
   prevMove = () => {
@@ -135,6 +137,13 @@ export class ChessgroundController {
   };
 
   lastMove = () => {
-    console.log("lastMove");
+    // go to the last move of current variation mainline
+    const mainline = this.currentMoveNode.mainline();
+    for (const node of mainline) {
+      const move = parseSan(this.chessLogic, node.san);
+      this.chessLogic.play(move!);
+      this.currentLine.push(move as NormalMove);
+    }
+    this.reloadAllObjects();
   };
 }
