@@ -9,6 +9,7 @@
     import { onMount } from "svelte";
     import { enhance } from "$app/forms";
     import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
+    import ChessopsPgnView from "./ChessopsPgnView.svelte";
 
 
     let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
@@ -29,7 +30,13 @@
 
 </script>
 
-<div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+<div class="chessground-puzzle-horizontal-box">
+    <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+</div>
+<div class="chessground-puzzle-horizontal-box">
+    <ChessopsPgnView chessgroundController={chessgroundController!}/>
+</div>
+
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
 
 <br/>
@@ -49,12 +56,6 @@
 <p class="error_message">{postPuzzleMessage}</p>
 
 <style>
-    #chessDiv {
-		width: var(--chessgroundSize);
-		height: var(--chessgroundSize);
-        margin-bottom: 20px;
-	}
-
     form {
     border-radius: 5px;
     background-color: #f2f2f2;

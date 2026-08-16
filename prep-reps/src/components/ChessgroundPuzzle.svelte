@@ -7,6 +7,7 @@
     import type { Api } from "@lichess-org/chessground/api";
     import ChessgroundControls from "./ChessgroundControls.svelte";
     import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
+    import ChessopsPgnView from "./ChessopsPgnView.svelte";
 
 
     let {board="blue", pieces="merida", puzzle, buttonDefs}: {board: string, pieces: string, puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();
@@ -16,11 +17,11 @@
 
     let chessgroundButtons: IButtonLabel[] = $derived(
         [
-            ...buttonDefs,
             {label: "<<", onclick: puzzleController?.firstMove},
             {label: "<", onclick: puzzleController?.prevMove},
             {label: ">", onclick: puzzleController?.nextMove},
             {label: ">>", onclick: puzzleController?.lastMove},
+            ...buttonDefs,
         ]
     );
 
@@ -37,21 +38,7 @@
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 </div>
 <div class="chessground-puzzle-horizontal-box">
-    <p>{puzzleController?.currentPgn}</p>
+    <ChessopsPgnView chessgroundController={puzzleController!}/>
 </div>
 
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
-
-<style>
-    #chessDiv {
-		width: var(--chessgroundSize);
-		height: var(--chessgroundSize);
-        margin-bottom: 20px;
-	}
-
-    .chessground-puzzle-horizontal-box {
-        display: inline-block;
-        vertical-align: top;
-        padding-right: 2em;
-    }
-</style>

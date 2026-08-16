@@ -25,6 +25,9 @@ export class ChessgroundController {
   protected chessGame: Game<PgnNodeData>;
   protected chessLogic: Chess;
   public currentPgn: string = $state("");
+  public currentInteractivePgn: { label: string; goto: () => void }[] = $state(
+    [],
+  );
   protected currentMoveNode: Node<PgnNodeData>;
 
   constructor(
@@ -100,6 +103,16 @@ export class ChessgroundController {
       this.chessLogic.play(move);
       this.currentLine.push(move);
       this.currentPgn = makePgn(this.chessGame);
+      this.currentInteractivePgn = Array.from(
+        this.chessGame.moves.mainlineNodes(),
+      ).map((node) => {
+        return {
+          label: node.data.san,
+          goto: () => {
+            this.jumpToNode(node);
+          },
+        };
+      });
       this.ground.set({
         movable: { color: this.chessLogic.turn },
         turnColor: this.chessLogic.turn,
@@ -118,6 +131,46 @@ export class ChessgroundController {
     }
   }
 
+  findNodeLine = (
+    root: Node<PgnNodeData>,
+    node: ChildNode<PgnNodeData>,
+  ): ChildNode<PgnNodeData>[] => {
+    if (root === node) {
+      // early break
+      return [root as ChildNode<PgnNodeData>];
+    }
+    let ret: ChildNode<PgnNodeData>[] = [];
+    for (const childNode of root.children) {
+      let childNodeLine: ChildNode<PgnNodeData>[] = [];
+      if (root instanceof ChildNode) {
+        // include root unless it's the absolute root of this.chessGame
+        childNodeLine.push(root);
+      }
+      childNodeLine.push(...this.findNodeLine(childNode, node));
+
+      // break if current line contains the searched node
+      const nodeIndex = childNodeLine.indexOf(node);
+      if (nodeIndex !== -1) {
+        ret = childNodeLine.slice(0, nodeIndex + 1);
+        break;
+      }
+    }
+    return ret;
+  };
+
+  jumpToNode = (node: ChildNode<PgnNodeData>) => {
+    const nodeLine = this.findNodeLine(this.chessGame.moves, node);
+    this.currentLine = nodeLine.reduce(
+      (acc: [Chess, NormalMove[]], curr: ChildNode<PgnNodeData>) => {
+        acc[1].push(parseSan(acc[0], curr.data.san) as NormalMove);
+        acc[0].play(acc[1].at(-1)!);
+        return acc;
+      },
+      [Chess.fromSetup(parseFen(this.initialFen).unwrap()).unwrap(), []],
+    )[1];
+    this.reloadAllObjects();
+  };
+
   firstMove = () => {
     this.currentLine = [];
     this.reloadAllObjects();
@@ -129,6 +182,13 @@ export class ChessgroundController {
   };
 
   nextMove = () => {
+    // const nextMoveTest = Array.from(this.currentMoveNode.mainlineNodes()).at(0);
+    // console.log("next move jumpToNode test");
+    // if (nextMoveTest !== undefined) {
+    //   this.jumpToNode(nextMoveTest);
+    // }
+    // return;
+
     const nextMove = Array.from(this.currentMoveNode.mainline()).at(0);
     if (nextMove !== undefined) {
       const cgMove = chessgroundMove(parseSan(this.chessLogic, nextMove.san)!);

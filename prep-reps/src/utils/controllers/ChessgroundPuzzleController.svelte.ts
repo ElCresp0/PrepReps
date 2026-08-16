@@ -28,7 +28,6 @@ export class ChessgroundPuzzleController extends ChessgroundController {
   }
 
   userMove = (from: Key, to: Key) => {
-    console.log("local userMove()");
     const move = { from: parseSquare(from), to: parseSquare(to) } as NormalMove;
     if (moveEquals(this.puzzle.moves[this.currentLine.length], move)) {
       // correct move

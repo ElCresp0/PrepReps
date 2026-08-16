@@ -223,3 +223,15 @@ cg-board piece.fading {
 .cg-custom-below {
   display: none !important;
 }
+
+#chessDiv {
+  width: var(--chessgroundSize);
+  height: var(--chessgroundSize);
+  margin-bottom: 20px;
+}
+
+.chessground-puzzle-horizontal-box {
+  display: inline-block;
+  vertical-align: top;
+  padding-right: 2em;
+}
