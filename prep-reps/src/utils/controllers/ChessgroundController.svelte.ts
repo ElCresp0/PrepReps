@@ -141,7 +141,7 @@ export class ChessgroundController {
     }
     let ret: ChildNode<PgnNodeData>[] = [];
     for (const childNode of root.children) {
-      let childNodeLine: ChildNode<PgnNodeData>[] = [];
+      const childNodeLine: ChildNode<PgnNodeData>[] = [];
       if (root instanceof ChildNode) {
         // include root unless it's the absolute root of this.chessGame
         childNodeLine.push(root);
