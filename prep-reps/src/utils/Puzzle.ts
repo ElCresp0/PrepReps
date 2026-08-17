@@ -18,7 +18,6 @@ export class Puzzle {
 
   constructor(title: string, pgn: string, id: string) {
     const game = parsePgn(pgn)[0];
-    console.debug("game:", game);
 
     this.title = title;
     this.fen = game.headers.get("FEN") || makeFen(defaultSetup());

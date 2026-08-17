@@ -16,7 +16,6 @@
     let chessDiv: HTMLElement;
     let ground: Api;
     let chessgroundController: ChessgroundController | undefined = $state();
-    
     let chessgroundButtons: IButtonLabel[] = $state([]);
 
     onMount(() => {
@@ -34,7 +33,9 @@
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 </div>
 <div class="chessground-puzzle-horizontal-box">
-    <ChessopsPgnView chessgroundController={chessgroundController!}/>
+    {#if chessgroundController !== undefined}
+        <ChessopsPgnView currNode={chessgroundController.currentInteractivePgn} indent={1}/>
+    {/if}
 </div>
 
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>

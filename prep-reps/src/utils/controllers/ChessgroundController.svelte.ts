@@ -18,25 +18,26 @@ import {
   type PgnNodeData,
 } from "chessops/pgn";
 import { SvelteMap } from "svelte/reactivity";
+import type { IChildNode } from "../interfaces/IChildNode";
 
 export class ChessgroundController {
   protected currentLine: NormalMove[] = [];
   protected config: Config;
   protected chessGame: Game<PgnNodeData>;
   protected chessLogic: Chess;
-  public currentPgn: string = $state("");
-  public currentInteractivePgn: { label: string; goto: () => void }[] = $state(
-    [],
-  );
+  public currentPgn: string;
+  public currentInteractivePgn: IChildNode;
   protected currentMoveNode: Node<PgnNodeData>;
 
   constructor(
     protected ground: Api,
     protected initialFen: string = INITIAL_FEN,
   ) {
-    this.chessGame = defaultGame<PgnNodeData>(
+    this.chessGame = $state(defaultGame<PgnNodeData>(
       () => new SvelteMap<string, string>([["FEN", this.initialFen]]),
-    );
+    ));
+    this.currentPgn = $state(makePgn(this.chessGame));
+    this.currentInteractivePgn = $state(this.makeInteractivePgn(this.chessGame.moves));
     this.currentMoveNode = this.chessGame.moves;
     this.chessLogic = Chess.fromSetup(
       parseFen(this.initialFen).unwrap(),
@@ -62,13 +63,12 @@ export class ChessgroundController {
 
     for (const move of this.currentLine) {
       const san = makeSan(this.chessLogic, move);
-      this.currentMoveNode = this.currentMoveNode!.children.find((child) => {
+      this.currentMoveNode = this.currentMoveNode.children.find((child) => {
         return child.data.san === san;
       })!;
       this.chessLogic.play(move);
     }
 
-    this.currentPgn = makePgn(this.chessGame);
     this.ground.set({
       fen: makeFen(this.chessLogic.toSetup()),
       movable: { color: this.chessLogic.turn },
@@ -86,7 +86,7 @@ export class ChessgroundController {
     if (this.chessLogic.isLegal(move)) {
       const san = makeSan(this.chessLogic, move);
       // check if the played move is already present in the move tree
-      let newMove = this.currentMoveNode?.children.find((child) => {
+      let newMove = this.currentMoveNode.children.find((child) => {
         return child.data.san === san;
       });
       if (newMove === undefined) {
@@ -95,7 +95,7 @@ export class ChessgroundController {
         });
 
         // push move to game tree
-        this.currentMoveNode!.children.push(newMove);
+        this.currentMoveNode.children.push(newMove);
       }
       this.currentMoveNode = newMove;
 
@@ -103,16 +103,7 @@ export class ChessgroundController {
       this.chessLogic.play(move);
       this.currentLine.push(move);
       this.currentPgn = makePgn(this.chessGame);
-      this.currentInteractivePgn = Array.from(
-        this.chessGame.moves.mainlineNodes(),
-      ).map((node) => {
-        return {
-          label: node.data.san,
-          goto: () => {
-            this.jumpToNode(node);
-          },
-        };
-      });
+      this.currentInteractivePgn = this.makeInteractivePgn(this.chessGame.moves);
       this.ground.set({
         movable: { color: this.chessLogic.turn },
         turnColor: this.chessLogic.turn,
@@ -130,6 +121,27 @@ export class ChessgroundController {
       });
     }
   }
+
+  makeInteractivePgn = (root: Node<PgnNodeData>): IChildNode => {
+    const label = root instanceof ChildNode ? root.data.san : "";
+    const goto_foo = root instanceof ChildNode ? () => {this.jumpToNode(root)} : () => {};
+    const children = Array.from(root.children).map((node) => {return this.makeInteractivePgn(node);});
+    const hasData = root instanceof ChildNode;
+    const hasChildren = root.children.length > 0
+
+    if (hasData && hasChildren) {
+      return {label: label, goto: goto_foo, children: children};
+    }
+    else if (hasData && hasChildren === false) {
+      return {label: label, goto: goto_foo};
+    }
+    else if (hasData === false && hasChildren) {
+        return {children: children};
+    }
+    else {
+        return {};
+      }
+  };
 
   findNodeLine = (
     root: Node<PgnNodeData>,
@@ -182,13 +194,6 @@ export class ChessgroundController {
   };
 
   nextMove = () => {
-    // const nextMoveTest = Array.from(this.currentMoveNode.mainlineNodes()).at(0);
-    // console.log("next move jumpToNode test");
-    // if (nextMoveTest !== undefined) {
-    //   this.jumpToNode(nextMoveTest);
-    // }
-    // return;
-
     const nextMove = Array.from(this.currentMoveNode.mainline()).at(0);
     if (nextMove !== undefined) {
       const cgMove = chessgroundMove(parseSan(this.chessLogic, nextMove.san)!);

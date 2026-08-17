@@ -38,7 +38,9 @@
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 </div>
 <div class="chessground-puzzle-horizontal-box">
-    <ChessopsPgnView chessgroundController={puzzleController!}/>
+    {#if puzzleController !== undefined}
+        <ChessopsPgnView currNode={puzzleController.currentInteractivePgn} indent={1}/>
+    {/if}
 </div>
 
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>

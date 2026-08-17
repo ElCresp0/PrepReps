@@ -232,6 +232,7 @@ cg-board piece.fading {
 
 .chessground-puzzle-horizontal-box {
   display: inline-block;
+  width: 45%;
   vertical-align: top;
   padding-right: 2em;
 }
