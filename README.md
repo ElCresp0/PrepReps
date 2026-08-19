@@ -78,5 +78,9 @@ npm run dev
 - specific chess game logic
   - promotions
   - en passant
-- DB with puzzle library (Create-Read for starters)
-- side panel to navigate through puzzles
+- move number annotations in interactive pgn
+- collapse-expand pgn lines
+- resizable chessboard
+  - backend: user preferences (theme, chessboard size, chess set, move sounds)
+- client/server side chess engine
+- side panel to (pre?)view and select puzzles
