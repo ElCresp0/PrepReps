@@ -84,3 +84,4 @@ npm run dev
   - backend: user preferences (theme, chessboard size, chess set, move sounds)
 - client/server side chess engine
 - side panel to (pre?)view and select puzzles
+- block PR's that don't pass formatting check
