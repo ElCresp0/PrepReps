@@ -1,5 +1,9 @@
 import { redirect, type Cookies } from "@sveltejs/kit";
-import { createUser, signIn, STATUS } from "../../utils/controllers/BackendController";
+import {
+  createUser,
+  signIn,
+  STATUS,
+} from "../../utils/controllers/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
 

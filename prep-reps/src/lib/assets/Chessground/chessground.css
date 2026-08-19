@@ -244,7 +244,7 @@ cg-board piece.fading {
 .side-component {
   border-radius: 5px;
   background-color: #f2f2f2;
-  
+
   /* padding + box-sizing applies the padding inside the specified width
      instead of widening the container
   */
