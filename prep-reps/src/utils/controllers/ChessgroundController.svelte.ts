@@ -33,11 +33,15 @@ export class ChessgroundController {
     protected ground: Api,
     protected initialFen: string = INITIAL_FEN,
   ) {
-    this.chessGame = $state(defaultGame<PgnNodeData>(
-      () => new SvelteMap<string, string>([["FEN", this.initialFen]]),
-    ));
+    this.chessGame = $state(
+      defaultGame<PgnNodeData>(
+        () => new SvelteMap<string, string>([["FEN", this.initialFen]]),
+      ),
+    );
     this.currentPgn = $state(makePgn(this.chessGame));
-    this.currentInteractivePgn = $state(this.makeInteractivePgn(this.chessGame.moves));
+    this.currentInteractivePgn = $state(
+      this.makeInteractivePgn(this.chessGame.moves),
+    );
     this.currentMoveNode = this.chessGame.moves;
     this.chessLogic = Chess.fromSetup(
       parseFen(this.initialFen).unwrap(),
@@ -103,7 +107,9 @@ export class ChessgroundController {
       this.chessLogic.play(move);
       this.currentLine.push(move);
       this.currentPgn = makePgn(this.chessGame);
-      this.currentInteractivePgn = this.makeInteractivePgn(this.chessGame.moves);
+      this.currentInteractivePgn = this.makeInteractivePgn(
+        this.chessGame.moves,
+      );
       this.ground.set({
         movable: { color: this.chessLogic.turn },
         turnColor: this.chessLogic.turn,
@@ -124,23 +130,27 @@ export class ChessgroundController {
 
   makeInteractivePgn = (root: Node<PgnNodeData>): IChildNode => {
     const label = root instanceof ChildNode ? root.data.san : "";
-    const goto_foo = root instanceof ChildNode ? () => {this.jumpToNode(root)} : () => {};
-    const children = Array.from(root.children).map((node) => {return this.makeInteractivePgn(node);});
+    const goto_foo =
+      root instanceof ChildNode
+        ? () => {
+            this.jumpToNode(root);
+          }
+        : () => {};
+    const children = Array.from(root.children).map((node) => {
+      return this.makeInteractivePgn(node);
+    });
     const hasData = root instanceof ChildNode;
-    const hasChildren = root.children.length > 0
+    const hasChildren = root.children.length > 0;
 
     if (hasData && hasChildren) {
-      return {label: label, goto: goto_foo, children: children};
+      return { label: label, goto: goto_foo, children: children };
+    } else if (hasData && hasChildren === false) {
+      return { label: label, goto: goto_foo };
+    } else if (hasData === false && hasChildren) {
+      return { children: children };
+    } else {
+      return {};
     }
-    else if (hasData && hasChildren === false) {
-      return {label: label, goto: goto_foo};
-    }
-    else if (hasData === false && hasChildren) {
-        return {children: children};
-    }
-    else {
-        return {};
-      }
   };
 
   findNodeLine = (

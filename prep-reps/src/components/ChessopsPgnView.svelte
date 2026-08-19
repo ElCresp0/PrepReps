@@ -16,9 +16,11 @@
         <!-- sidelines -->
         {#if currNode.label && currNode.goto}
             <button onclick={currNode.goto}>{currNode.label}</button>
-         {/if}
+        {/if}
+        <!-- eslint-disable svelte/require-each-key -->
         {#each currNode.children as moveNode, index}
-            <br>{#each new Array(indent) as _}&emsp;{/each}
+            <!-- eslint-disable svelte/require-each-key -->
+            <br>{#each new Array(indent)}&emsp;{/each}
             {index}
             <Self currNode={moveNode} indent={indent + 1}/>
         {/each}
