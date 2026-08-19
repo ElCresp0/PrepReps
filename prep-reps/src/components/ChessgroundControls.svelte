@@ -31,7 +31,7 @@ function documentOnClick(event: MouseEvent) {
 
 <svelte:document on:click={documentOnClick} />
 
-<div id="chessgroundNavigationControls">
+<div id="chessground-controls">
     <!-- eslint-disable svelte/require-each-key -->
     {#each buttonDefs as btn, index}
         {#if btn.onclick !== undefined}
@@ -74,6 +74,7 @@ function documentOnClick(event: MouseEvent) {
 </div>
 
 <style>
+
     button.chessgroundCtrlButton {
         background-color: #ddd;
         display: inline-block;
