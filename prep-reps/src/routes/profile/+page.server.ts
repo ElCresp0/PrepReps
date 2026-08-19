@@ -1,4 +1,4 @@
-import { getPuzzles } from "../../utils/BackendController";
+import { getPuzzles } from "../../utils/controllers/BackendController";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async (event) => {

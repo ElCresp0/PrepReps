@@ -1,11 +1,7 @@
 <script lang="ts">
     import Icon from "@iconify/svelte";
+    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
 
-interface IButtonLabel {
-    label: string,
-    onclick?: CallableFunction,
-    dropdown?: {label: string, onclick: CallableFunction}[]
-}
 let {buttonDefs}: {buttonDefs: IButtonLabel[]} = $props();
 
 let displayNone = $state([] as {displayNone: boolean}[]);
@@ -24,7 +20,6 @@ function clickedElement(element: HTMLElement, event: MouseEvent) {
 }
 
 function documentOnClick(event: MouseEvent) {
-    console.log("clicked");
     displayNone.forEach((_, index: number) => {
         // hide if clicked outside of a top level button,
         if (clickedElement(topLevelButtons[index], event) === false) {
@@ -36,7 +31,7 @@ function documentOnClick(event: MouseEvent) {
 
 <svelte:document on:click={documentOnClick} />
 
-<div id="chessgroundNavigationControls">
+<div id="chessground-controls">
     <!-- eslint-disable svelte/require-each-key -->
     {#each buttonDefs as btn, index}
         {#if btn.onclick !== undefined}
@@ -79,6 +74,7 @@ function documentOnClick(event: MouseEvent) {
 </div>
 
 <style>
+
     button.chessgroundCtrlButton {
         background-color: #ddd;
         display: inline-block;

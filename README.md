@@ -68,11 +68,20 @@ npm i
 npm run dev
 ```
 
-# TODO
+## TODO
 
-* navigating through played moves
-  * bind move tree navigation buttons with keyboard arrows
-  * make currentPgn a list (tree) of clickable nodes
-* move tree logic with sidelines
-* DB with puzzle library (Create-Read for starters)
-* side panel to navigate through puzzles
+- navigating through played moves
+  - bind move tree navigation buttons with keyboard arrows
+  - make currentPgn a list (tree) of clickable nodes
+- hint button in `\train`
+- `\train` reset position on NextPuzzle()
+- specific chess game logic
+  - promotions
+  - en passant
+- move number annotations in interactive pgn
+- collapse-expand pgn lines
+- resizable chessboard
+  - backend: user preferences (theme, chessboard size, chess set, move sounds)
+- client/server side chess engine
+- side panel to (pre?)view and select puzzles
+- block PR's that don't pass formatting check

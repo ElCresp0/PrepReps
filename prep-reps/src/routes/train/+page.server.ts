@@ -3,7 +3,7 @@ import {
   getPuzzles,
   deletePuzzle,
   STATUS,
-} from "../../utils/BackendController";
+} from "../../utils/controllers/BackendController";
 import { Puzzle } from "../../utils/Puzzle";
 import type { PageServerLoad } from "./$types";
 import { resolve } from "$app/paths";
@@ -15,7 +15,7 @@ const DEMO_PUZZLES = [
     "",
   ).serialize(),
   new Puzzle(
-    "Puzzle1",
+    "Puzzle2",
     '[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]\n\n 1. e4 c5 2. Nh3',
     "",
   ).serialize(),
