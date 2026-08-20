@@ -32,18 +32,17 @@
 <div class="chessground-puzzle-horizontal-box">
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 </div>
-<div class="chessground-puzzle-horizontal-box side-component">
+<div class="chessground-puzzle-horizontal-box side-component next-to-chessboard-scrollable">
     {#if chessgroundController !== undefined}
         <ChessopsPgnView currNode={chessgroundController.currentInteractivePgn} indent={1}/>
     {/if}
 </div>
 
-<!-- <div class="side-component"></div> -->
 <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
 
 <br/>
 
-<form method="POST" class="side-component" use:enhance>
+<form method="POST" class="chessground-analysis-form" use:enhance>
     <div class="form-group">
         <label for="title">title</label>
         <input name="title" type="title" id="title">
@@ -62,6 +61,18 @@
 
     .form-group {
         margin-bottom: 5px;
+    }
+
+    .chessground-analysis-form {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+
+        /* padding + box-sizing applies the padding inside the specified width
+            instead of widening the container
+        */
+        padding: 20px;
+        box-sizing: border-box;
+        width: var(--chessgroundSize);
     }
 
     .error_message {

@@ -250,5 +250,9 @@ cg-board piece.fading {
   */
   padding: 20px;
   box-sizing: border-box;
-  width: var(--chessgroundSize);
+  width: calc(var(--chessgroundSize) * 2 / 3);
+
+  /* keep same height as the chessboard, apply a scrollbar if needed */
+  height: var(--chessgroundSize);
+  overflow-y: auto;
 }

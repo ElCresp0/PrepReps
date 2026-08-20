@@ -37,7 +37,7 @@
 <div class="chessground-puzzle-horizontal-box">
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
 </div>
-<div class="chessground-puzzle-horizontal-box">
+<div class="chessground-puzzle-horizontal-box side-component next-to-chessboard-scrollable">
     {#if puzzleController !== undefined}
         <ChessopsPgnView currNode={puzzleController.currentInteractivePgn} indent={1}/>
     {/if}
