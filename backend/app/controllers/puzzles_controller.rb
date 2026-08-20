@@ -14,6 +14,11 @@ class PuzzlesController < ApplicationController
         }
     end
 
+    def get_puzzle_by_id
+        puzzle = current_user.puzzles.find_by!(id: puzzles_params[:puzzle_id])
+        render json: PuzzleSerializer.new(puzzle).as_json, status: :ok
+    end
+
     # POST /puzzles
     def create
         puzzle = current_user.puzzles.create!(puzzles_params)
@@ -21,6 +26,16 @@ class PuzzlesController < ApplicationController
         render json: {
             Puzzle: PuzzleSerializer.new(puzzle).as_json
         }, status: :created
+    end
+
+    def update
+        puzzle = current_user.puzzles.find_by!(id: puzzles_params[:puzzle_id])
+        puzzle.update(
+            title: puzzles_params[:title] || puzzle[:title],
+            pgn: puzzles_params[:pgn] || puzzle[:pgn]
+        )
+
+        render json: PuzzleSerializer.new(puzzle).as_json, status: :ok
     end
 
     # DELETE /puzzles

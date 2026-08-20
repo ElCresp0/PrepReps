@@ -8,9 +8,10 @@
     import ChessgroundControls from "./ChessgroundControls.svelte";
     import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
     import ChessopsPgnView from "./ChessopsPgnView.svelte";
+    import PuzzleList from "./PuzzleList.svelte";
 
 
-    let {board="blue", pieces="merida", puzzle, buttonDefs}: {board: string, pieces: string, puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();
+    let {board="blue", pieces="merida", puzzles, puzzle, buttonDefs}: {board: string, pieces: string, puzzles: Puzzle[], puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();
     let chessDiv: HTMLElement;
     let puzzleController: ChessgroundPuzzleController | undefined = $state();
     let ground: Api;
@@ -34,13 +35,16 @@
 
 <h2>{puzzle.title}</h2>
 
-<div class="chessground-puzzle-horizontal-box">
-    <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+<div class="chessground-puzzle-horizontal-box side-component">
+    <PuzzleList puzzles={puzzles} currentPuzzleId={puzzle!.id}/>
 </div>
 <div class="chessground-puzzle-horizontal-box">
+    <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+    <br>
+    <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
+</div>
+<div class="chessground-puzzle-horizontal-box side-component">
     {#if puzzleController !== undefined}
         <ChessopsPgnView currNode={puzzleController.currentInteractivePgn} indent={1}/>
     {/if}
 </div>
-
-<ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>

@@ -9,7 +9,7 @@
 	let { data }: PageProps = $props();
 
 	let puzzleIndex = $state(0);
-	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? new Puzzle(data.puzzles[puzzleIndex].title, data.puzzles[puzzleIndex].pgn, data.puzzles[puzzleIndex].id) : null);
+	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? Puzzle.deserialize(data.puzzles[puzzleIndex]) : null);
 	let chessGroundSize = "512px";
 
 	function nextPuzzle() {
@@ -48,7 +48,9 @@
 {:else if puzzleIndex === data.puzzles.length}
 	<p>That was your last puzzle! Refresh the page to start over.</p>
 {:else}
-	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} buttonDefs={chessgroundButtons} --chessgroundSize={chessGroundSize}/>
+    <center>
+        <ChessgroundPuzzle board="blue" pieces="merida" puzzles={data.puzzles.map(p => Puzzle.deserialize(p))} puzzle={puzzle!} buttonDefs={chessgroundButtons} --chessgroundSize={chessGroundSize}/>
+    </center>
 {/if}
 
 <!-- TODO: all puzzles view -->
