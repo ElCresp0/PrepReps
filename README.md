@@ -85,3 +85,6 @@ npm run dev
 - client/server side chess engine
 - side panel to (pre?)view and select puzzles
 - block PR's that don't pass formatting check
+- consider decomposing ChessgroundPuzzle and ChessgroundAnalysis and using their subcomponents directly in `+page.svelte` files
+- puzzle collections
+- `PuzzleList`: loading selected puzzle in `/train` and `/construct`

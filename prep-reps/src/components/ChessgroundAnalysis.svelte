@@ -10,9 +10,11 @@
     import { enhance } from "$app/forms";
     import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
     import ChessopsPgnView from "./ChessopsPgnView.svelte";
+    import PuzzleList from "./PuzzleList.svelte";
+    import type { Puzzle } from "../utils/Puzzle";
 
 
-    let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
+    let {board="blue", pieces="merida", postPuzzleMessage="", puzzles=[]}: {board: string, pieces: string, postPuzzleMessage: string|null, puzzles: Puzzle[]} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let chessgroundController: ChessgroundController | undefined = $state();
@@ -29,32 +31,35 @@
 
 </script>
 
+<div class="chessground-puzzle-horizontal-box side-component">
+    <PuzzleList puzzles={puzzles}/>
+</div>
 <div class="chessground-puzzle-horizontal-box">
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+    <div><ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/></div>
+    <div>
+        <form method="POST" class="chessground-analysis-form" use:enhance>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input name="title" type="title" id="title">
+                <!-- <button>Reset</button> -->
+            </div>
+            <div class="form-group">
+                <label for="pgn">Pgn</label>
+                <input name="pgn" type="pgn" id="pgn" value={chessgroundController?.currentPgn}>
+            </div>
+            <button type="submit" formaction="?/postPuzzle">Save</button>
+            <!-- TODO: PATCH -->
+            <!-- <button type="submit" formaction="?/postPuzzle">Update</button> -->
+        </form>
+        <p class="error_message">{postPuzzleMessage}</p>
+    </div>
 </div>
-<div class="chessground-puzzle-horizontal-box side-component next-to-chessboard-scrollable">
+<div class="chessground-puzzle-horizontal-box side-component">
     {#if chessgroundController !== undefined}
         <ChessopsPgnView currNode={chessgroundController.currentInteractivePgn} indent={1}/>
     {/if}
 </div>
-
-<ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
-
-<br/>
-
-<form method="POST" class="chessground-analysis-form" use:enhance>
-    <div class="form-group">
-        <label for="title">title</label>
-        <input name="title" type="title" id="title">
-    </div>
-    <div class="form-group">
-        <label for="pgn">pgn</label>
-        <input name="pgn" type="pgn" id="pgn" value={chessgroundController?.currentPgn}>
-    </div>
-    <button type="submit" formaction="?/postPuzzle">Save</button>
-</form>
-
-<p class="error_message">{postPuzzleMessage}</p>
 
 <style lang="css">
     label {display: block;}
