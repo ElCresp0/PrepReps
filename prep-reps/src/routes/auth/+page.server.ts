@@ -56,6 +56,12 @@ export const actions = {
 
     cookies.set("token", responseJson["token"], { path: "/" });
     cookies.set("username", responseJson["user"]["name"], { path: "/" });
+    const preferences = responseJson["user"]["preferences"];
+    let chessgroundSize = "";
+    if (preferences["chessgroundSize"] !== undefined) {
+      chessgroundSize = preferences["chessgroundSize"];
+    }
+    cookies.set("chessgroundSize", chessgroundSize, { path: "/" });
 
     // Redirect to the login page
     throw redirect(STATUS.FOUND, "/profile");

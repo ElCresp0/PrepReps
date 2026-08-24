@@ -20,6 +20,7 @@ export const load: PageServerLoad = async (event) => {
     puzzles: event.locals.token
       ? (await getPuzzles(event.locals.token!)) || []
       : [],
+    chessgroundSize: event.cookies.get("chessgroundSize") || "50vw"
   };
 };
 
