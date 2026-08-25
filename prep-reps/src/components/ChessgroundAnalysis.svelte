@@ -9,12 +9,10 @@
     import { onMount } from "svelte";
     import { enhance } from "$app/forms";
     import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
-    import ChessopsPgnView from "./ChessopsPgnView.svelte";
-    import PuzzleList from "./PuzzleList.svelte";
-    import type { Puzzle } from "../utils/Puzzle";
+    import ChessopsPgnView from "./ChessopsPgnView/ChessopsPgnView.svelte";
 
 
-    let {board="blue", pieces="merida", postPuzzleMessage="", puzzles=[]}: {board: string, pieces: string, postPuzzleMessage: string|null, puzzles: Puzzle[]} = $props();
+    let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let chessgroundController: ChessgroundController | undefined = $state();
@@ -31,9 +29,6 @@
 
 </script>
 
-<div class="chessground-puzzle-horizontal-box side-component">
-    <PuzzleList puzzles={puzzles}/>
-</div>
 <div class="chessground-puzzle-horizontal-box">
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
     <div><ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/></div>

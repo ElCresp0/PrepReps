@@ -23,5 +23,7 @@
 </div>
 
 <div class="body">
-{@render children()}
+	<center>
+		{@render children()}
+	</center>
 </div>

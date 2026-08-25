@@ -6,8 +6,7 @@
 </script>
 
 <ul>
-<!-- eslint-disable svelte/require-each-key -->
-{#each puzzles as puzzle}
+{#each puzzles as puzzle (puzzle.id)}
     <li class={puzzle.id === currentPuzzleId ? "currentPuzzle" : ""}>
         {puzzle.title}
     </li>

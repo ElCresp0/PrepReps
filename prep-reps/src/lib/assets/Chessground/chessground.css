@@ -226,19 +226,20 @@ cg-board piece.fading {
 
 #chessDiv {
   width: var(--chessgroundSize);
-  /* height: 0 + padding-bottom: 100% trick
+  /* height: 0 + padding-bottom trick
      makes the height of the element equal to it's width  */
   height: 0;
-  padding-bottom: 100%;
+  padding-bottom: var(--chessgroundSize);
+}
+
+#chessground-wrapper {
+  white-space: nowrap;
 }
 
 .chessground-puzzle-horizontal-box {
   display: inline-block;
   vertical-align: top;
   padding-right: 20px;
-  padding-bottom: 20px;
-  width: var(--chessgroundSize);
-  max-height: var(--chessgroundSize);
 }
 
 .chessground-puzzle-horizontal-box > * {
@@ -255,7 +256,7 @@ cg-board piece.fading {
   padding: 20px;
   margin-right: 20px;
   box-sizing: border-box;
-  width: calc(var(--chessgroundSize) * 2 / 3);
+  width: calc((100% - var(--chessgroundSize)) / (var(--sideComponentsNb) + 1));
 
   /* keep same height as the chessboard, apply a scrollbar if needed */
   height: var(--chessgroundSize);
