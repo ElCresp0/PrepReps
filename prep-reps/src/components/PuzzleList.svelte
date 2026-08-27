@@ -1,16 +1,20 @@
 <script lang="ts">
     import type { Puzzle } from "../utils/Puzzle";
 
-    let {puzzles, currentPuzzleId=""}: {puzzles: Puzzle[], currentPuzzleId?: string} = $props();
+    let {puzzles, selectedPuzzleIndex = $bindable()}: {puzzles: Puzzle[], selectedPuzzleIndex: number} = $props();
 
 </script>
 
 <ul>
-{#each puzzles as puzzle (puzzle.id)}
-    <li class={puzzle.id === currentPuzzleId ? "currentPuzzle" : ""}>
-        {puzzle.title}
+{#each puzzles as puzzle, puzzleIndex (puzzle.id)}
+    <li class={puzzleIndex === selectedPuzzleIndex ? "currentPuzzle" : ""}>
+        <button onclick={() => {selectedPuzzleIndex = puzzleIndex}}>{puzzle.title}</button>
     </li>
 {/each}
+    <li class={selectedPuzzleIndex === puzzles.length ? "currentPuzzle" : ""}>
+        <!-- TODO: implement new puzzle (or rather loading selected puzzles in ChessgroundAnalysis component) -->
+        <button onclick={() => {alert("Not implemented yet!");}}>New Puzzle</button>
+    </li>
 </ul>
 
 <style>
@@ -19,7 +23,7 @@
         padding: 0;
     }
 
-    .currentPuzzle {
+    .currentPuzzle > *{
         color: blue;
     }
 </style>

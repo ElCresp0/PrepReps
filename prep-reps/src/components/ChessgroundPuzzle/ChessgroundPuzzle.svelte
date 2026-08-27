@@ -1,13 +1,13 @@
 <script lang="ts">
     import { Chessground } from "@lichess-org/chessground";
-    import { Puzzle } from "../utils/Puzzle";
+    import { Puzzle } from "../../utils/Puzzle";
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import { ChessgroundPuzzleController } from "../utils/controllers/ChessgroundPuzzleController.svelte";
+    import { ChessgroundPuzzleController } from "../../utils/controllers/ChessgroundPuzzleController.svelte";
     import type { Api } from "@lichess-org/chessground/api";
-    import ChessgroundControls from "./ChessgroundControls.svelte";
-    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
-    import ChessopsPgnView from "./ChessopsPgnView/ChessopsPgnView.svelte";
+    import ChessgroundControls from "../ChessgroundControls.svelte";
+    import type { IButtonLabel } from "../../utils/interfaces/IButtonLabel";
+    import ChessopsPgnView from "../ChessopsPgnView/ChessopsPgnView.svelte";
 
 
     let {board="blue", pieces="merida", puzzle, buttonDefs}: {board: string, pieces: string, puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();

@@ -1,15 +1,15 @@
 <script lang="ts">
     import { Chessground } from "@lichess-org/chessground";
 	import type { Api } from "@lichess-org/chessground/api";
-    import ChessgroundControls from "./ChessgroundControls.svelte";
+    import ChessgroundControls from "../ChessgroundControls.svelte";
 
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import { ChessgroundController } from "../utils/controllers/ChessgroundController.svelte";
+    import { ChessgroundController } from "../../utils/controllers/ChessgroundController.svelte";
     import { onMount } from "svelte";
     import { enhance } from "$app/forms";
-    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
-    import ChessopsPgnView from "./ChessopsPgnView/ChessopsPgnView.svelte";
+    import type { IButtonLabel } from "../../utils/interfaces/IButtonLabel";
+    import ChessopsPgnView from "../ChessopsPgnView/ChessopsPgnView.svelte";
 
 
     let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
