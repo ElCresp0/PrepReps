@@ -58,7 +58,7 @@ export const actions = {
     cookies.set("username", responseJson["user"]["name"], { path: "/" });
     const preferences = responseJson["user"]["preferences"];
     let chessgroundSize = "";
-    if (preferences["chessgroundSize"] !== undefined) {
+    if (preferences && preferences.get("chessgroundSize") !== undefined) {
       chessgroundSize = preferences["chessgroundSize"];
     }
     cookies.set("chessgroundSize", chessgroundSize, { path: "/" });
