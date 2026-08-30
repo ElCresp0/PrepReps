@@ -55,4 +55,16 @@ export class Puzzle {
     const pgn = makePgn(game);
     return { title: this.title, pgn: pgn, id: this.id };
   }
+
+  public static deserialize({
+    title,
+    pgn,
+    id,
+  }: {
+    title: string;
+    pgn: string;
+    id: string;
+  }): Puzzle {
+    return new Puzzle(title, pgn, id);
+  }
 }

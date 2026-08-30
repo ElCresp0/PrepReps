@@ -1,7 +1,11 @@
 import { redirect } from "@sveltejs/kit";
-import { postPuzzle } from "../../utils/controllers/BackendController";
+import {
+  getPuzzles,
+  postPuzzle,
+} from "../../utils/controllers/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
+import { CHESSBOARD_SIZE, DEMO_PUZZLES } from "../../utils/constants";
 
 enum STATUS {
   OK = 200,
@@ -11,9 +15,13 @@ enum STATUS {
   FOUND = 302,
 }
 
-export const load: PageServerLoad = (event) => {
+export const load: PageServerLoad = async (event) => {
   return {
     postPuzzleMessage: event.locals.postPuzzleMessage,
+    puzzles: event.locals.token
+      ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
+      : DEMO_PUZZLES,
+    chessgroundSize: event.cookies.get("chessgroundSize") || CHESSBOARD_SIZE,
   };
 };
 

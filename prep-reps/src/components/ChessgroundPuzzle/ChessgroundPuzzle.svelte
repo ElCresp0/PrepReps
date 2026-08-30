@@ -1,13 +1,13 @@
 <script lang="ts">
     import { Chessground } from "@lichess-org/chessground";
-    import { Puzzle } from "../utils/Puzzle";
+    import { Puzzle } from "../../utils/Puzzle";
     import "$lib/assets/Chessground/chessground.css";
     import "$lib/assets/Chessground/theme.css";
-    import { ChessgroundPuzzleController } from "../utils/controllers/ChessgroundPuzzleController.svelte";
+    import { ChessgroundPuzzleController } from "../../utils/controllers/ChessgroundPuzzleController.svelte";
     import type { Api } from "@lichess-org/chessground/api";
-    import ChessgroundControls from "./ChessgroundControls.svelte";
-    import type { IButtonLabel } from "../utils/interfaces/IButtonLabel";
-    import ChessopsPgnView from "./ChessopsPgnView.svelte";
+    import ChessgroundControls from "../ChessgroundControls.svelte";
+    import type { IButtonLabel } from "../../utils/interfaces/IButtonLabel";
+    import ChessopsPgnView from "../ChessopsPgnView/ChessopsPgnView.svelte";
 
 
     let {board="blue", pieces="merida", puzzle, buttonDefs}: {board: string, pieces: string, puzzle: Puzzle, buttonDefs: IButtonLabel[]} = $props();
@@ -32,15 +32,12 @@
 
 </script>
 
-<h2>{puzzle.title}</h2>
-
 <div class="chessground-puzzle-horizontal-box">
     <div bind:this={chessDiv} class="{board} {pieces}" id="chessDiv"></div>
+    <ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>
 </div>
-<div class="chessground-puzzle-horizontal-box">
+<div class="chessground-puzzle-horizontal-box side-component">
     {#if puzzleController !== undefined}
         <ChessopsPgnView currNode={puzzleController.currentInteractivePgn} indent={1}/>
     {/if}
 </div>
-
-<ChessgroundControls buttonDefs={chessgroundButtons} --buttonsCount={chessgroundButtons.length}/>

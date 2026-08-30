@@ -1,20 +1,23 @@
 <script lang="ts">
 	import { resolve } from "$app/paths";
     import type { PageProps } from "./$types";
-	import ChessgroundPuzzle from "../../components/ChessgroundPuzzle.svelte";
+	import ChessgroundPuzzle from "../../components/ChessgroundPuzzle/ChessgroundPuzzle.svelte";
 	import { Puzzle } from "../../utils/Puzzle";
     import { goto } from "$app/navigation";
+    import PuzzleList from "../../components/PuzzleList.svelte";
+    import { chessgroundPuzzleState as _state } from "../../components/ChessgroundPuzzle/state.svelte";
+    import { NEW_PUZZLE_ID } from "../../utils/constants";
 
 
 	let { data }: PageProps = $props();
 
-	let puzzleIndex = $state(0);
-	let puzzle = $derived((data.puzzles.length > puzzleIndex) ? new Puzzle(data.puzzles[puzzleIndex].title, data.puzzles[puzzleIndex].pgn, data.puzzles[puzzleIndex].id) : null);
-	let chessGroundSize = "512px";
+	// let puzzleIndex = $state(0);
+	let puzzle = $derived((data.puzzles.length > _state.puzzleIndex) ? Puzzle.deserialize(data.puzzles[_state.puzzleIndex]) : null);
+	let chessgroundSize = $derived(data.chessgroundSize);
+    let sideComponentsNb = 2;
 
 	function nextPuzzle() {
-		puzzleIndex++;
-		console.debug("next puzzle");
+		_state.puzzleIndex++;
 	}
 
     function deletePuzzle() {
@@ -22,7 +25,6 @@
         nextPuzzle();
     }
 
-	// TODO: move navigation
 	let chessgroundButtons = $derived(
         data.signed_in ? [
             {dropdown:
@@ -39,17 +41,33 @@
         ]
     );
 
+    let puzzles = $derived(data.puzzles.map(p => Puzzle.deserialize(p)));
+
+    $effect(() => {
+        _state.currentPuzzleId = data.puzzles.at(_state.puzzleIndex)?.id ?? NEW_PUZZLE_ID;
+    });
+
 </script>
 
-<br /><br />
+<h2>{puzzle?.title}</h2>
+<div id="chessground-wrapper" style="--chessgroundSize:{chessgroundSize}; --sideComponentsNb:{sideComponentsNb};">
 
-{#if data.puzzles.length === 0}
+{#if puzzles.length === 0}
 	<p>You haven't uploaded any puzzles yet! Head over to <a href={resolve("/construct")}>Construct page</a> to build your repertoire!</p>
-{:else if puzzleIndex === data.puzzles.length}
-	<p>That was your last puzzle! Refresh the page to start over.</p>
-{:else}
-	<ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} buttonDefs={chessgroundButtons} --chessgroundSize={chessGroundSize}/>
+	
+{:else if _state.puzzleIndex === puzzles.length}
+    <p>
+        That was your last puzzle!<br/>
+        <a href={resolve("/train")} onclick={()=>{_state.puzzleIndex = 0;}}>Start over</a>    
+    </p>
 {/if}
 
-<!-- TODO: all puzzles view -->
-<!-- TODO: interactive pgn view -->
+<div class="chessground-puzzle-horizontal-box side-component">
+    <PuzzleList puzzles={puzzles} bind:selectedPuzzleIndex={_state.puzzleIndex}/>
+    <!-- puzzleState={_state} -->
+</div>
+
+{#if _state.puzzleIndex < puzzles.length}
+    <ChessgroundPuzzle board="blue" pieces="merida" puzzle={puzzle!} buttonDefs={chessgroundButtons} />
+{/if}
+</div>
