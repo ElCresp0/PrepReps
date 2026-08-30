@@ -1,6 +1,7 @@
 import { Puzzle } from "./Puzzle";
 
 export const CHESSBOARD_SIZE = "512px";
+export const NEW_PUZZLE_ID = "";
 
 export const DEMO_PUZZLES = [
   new Puzzle(

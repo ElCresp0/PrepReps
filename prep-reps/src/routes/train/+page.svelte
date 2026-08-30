@@ -6,6 +6,7 @@
     import { goto } from "$app/navigation";
     import PuzzleList from "../../components/PuzzleList.svelte";
     import { chessgroundPuzzleState as _state } from "../../components/ChessgroundPuzzle/state.svelte";
+    import { NEW_PUZZLE_ID } from "../../utils/constants";
 
 
 	let { data }: PageProps = $props();
@@ -43,7 +44,7 @@
     let puzzles = $derived(data.puzzles.map(p => Puzzle.deserialize(p)));
 
     $effect(() => {
-        _state.currentPuzzleId = data.puzzles.at(_state.puzzleIndex)?.id ?? "";
+        _state.currentPuzzleId = data.puzzles.at(_state.puzzleIndex)?.id ?? NEW_PUZZLE_ID;
     });
 
 </script>

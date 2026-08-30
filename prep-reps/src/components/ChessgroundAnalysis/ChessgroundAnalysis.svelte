@@ -10,6 +10,8 @@
     import { enhance } from "$app/forms";
     import type { IButtonLabel } from "../../utils/interfaces/IButtonLabel";
     import ChessopsPgnView from "../ChessopsPgnView/ChessopsPgnView.svelte";
+    import { chessgroundAnalysisState as _state } from "./state.svelte";
+    import { NEW_PUZZLE_ID } from "../../utils/constants";
 
 
     let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
@@ -25,7 +27,7 @@
         chessgroundButtons.push({label: "<", onclick: chessgroundController.prevMove});
         chessgroundButtons.push({label: ">", onclick: chessgroundController.nextMove});
         chessgroundButtons.push({label: ">>", onclick: chessgroundController.lastMove});
-    })
+    });
 
 </script>
 
@@ -43,7 +45,13 @@
                 <label for="pgn">Pgn</label>
                 <input name="pgn" type="pgn" id="pgn" value={chessgroundController?.currentPgn}>
             </div>
-            <button type="submit" formaction="?/postPuzzle">Save</button>
+            
+            {#if _state.currentPuzzleId === NEW_PUZZLE_ID}
+                <button type="submit" formaction="?/postPuzzle">Save</button>
+            {:else}
+                <button type="submit" formaction="?/patchPuzzle">Update</button>
+            {/if}
+            
             <!-- TODO: PATCH -->
             <!-- <button type="submit" formaction="?/postPuzzle">Update</button> -->
         </form>
