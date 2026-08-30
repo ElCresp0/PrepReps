@@ -6,6 +6,7 @@
 
     import "$lib/assets/Chessground/chessground.css";
     import { chessgroundAnalysisState as _state } from "../../components/ChessgroundAnalysis/state.svelte";
+    import { onMount } from "svelte";
 
     let { data }: PageProps = $props();
 
@@ -14,6 +15,10 @@
     let puzzles = $derived(data.puzzles.map(p => Puzzle.deserialize(p)));
 
     let puzzleIndex = $derived(_state.puzzleIndex);
+
+    onMount(() => {
+        _state.puzzleIndex = puzzles.length;
+    });
 
 </script>
 
