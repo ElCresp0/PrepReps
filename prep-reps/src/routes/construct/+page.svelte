@@ -33,6 +33,6 @@
         <PuzzleList puzzles={puzzles} bind:selectedPuzzleIndex={_state.puzzleIndex}/>
     </div>
 
-    <ChessgroundAnalysis board="blue" pieces="merida" postPuzzleMessage={data.postPuzzleMessage}/>
+    <ChessgroundAnalysis board="blue" pieces="merida" puzzle={puzzles.at(puzzleIndex)} postPuzzleMessage={data.postPuzzleMessage}/>
 
 </div>

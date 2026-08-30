@@ -58,6 +58,41 @@ export class ChessgroundController {
     this.ground.set(this.config);
   }
 
+  loadMoves(moves: NormalMove[]) {
+    while (this.chessGame.moves.children.length > 0)
+      this.chessGame.moves.children.pop();
+    while (this.currentLine.length > 0) this.currentLine.pop();
+    this.chessLogic = Chess.fromSetup(
+      parseFen(this.initialFen).unwrap(),
+    ).unwrap();
+    this.currentMoveNode = this.chessGame.moves;
+
+    for (const move of moves) {
+      const newMove = new ChildNode<PgnNodeData>({
+        san: makeSan(this.chessLogic, move),
+      });
+      this.currentMoveNode.children.push(newMove);
+      this.currentMoveNode = newMove;
+
+      // update all objects
+      this.currentLine.push(move);
+      this.chessLogic.play(move);
+    }
+
+    this.ground.set({
+      fen: makeFen(this.chessLogic.toSetup()),
+      movable: { color: this.chessLogic.turn },
+      turnColor: this.chessLogic.turn,
+      lastMove:
+        this.currentLine.length > 0
+          ? chessgroundMove(this.currentLine[this.currentLine.length - 1])
+          : undefined,
+    });
+
+    this.currentPgn = makePgn(this.chessGame);
+    this.currentInteractivePgn = this.makeInteractivePgn(this.chessGame.moves);
+  }
+
   reloadAllObjects() {
     // updates everything based on this.currentLine
     this.chessLogic = Chess.fromSetup(

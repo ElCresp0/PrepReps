@@ -12,13 +12,23 @@
     import ChessopsPgnView from "../ChessopsPgnView/ChessopsPgnView.svelte";
     import { chessgroundAnalysisState as _state } from "./state.svelte";
     import { NEW_PUZZLE_ID } from "../../utils/constants";
+    import type { Puzzle } from "../../utils/Puzzle";
 
 
-    let {board="blue", pieces="merida", postPuzzleMessage=""}: {board: string, pieces: string, postPuzzleMessage: string|null} = $props();
+    let {board="blue", pieces="merida", puzzle=undefined, postPuzzleMessage=""}: {board: string, pieces: string, puzzle: Puzzle | undefined, postPuzzleMessage: string|null} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let chessgroundController: ChessgroundController | undefined = $state();
     let chessgroundButtons: IButtonLabel[] = $state([]);
+
+    $effect(() => {
+        if (puzzle) {
+            chessgroundController?.loadMoves(puzzle.moves);
+        }
+        else {
+            chessgroundController?.loadMoves([]);
+        }
+    });
 
     onMount(() => {
         ground = Chessground(chessDiv!);
