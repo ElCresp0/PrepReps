@@ -38,6 +38,9 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("BACKEND_HOST", "localhost"), port: ENV.fetch("BACKEND_PORT", "3000") }
 
+  # Allow docker container as the host
+  config.hosts << ENV.fetch("BACKEND_HOST", "localhost")
+
   # set Logger
   config.logger = Logger.new(STDOUT)
 

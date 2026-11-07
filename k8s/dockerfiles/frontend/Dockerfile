@@ -1,9 +1,5 @@
 # k8s/dockerfiles/frontend/Dockerfile
 
-# run in project root directory:
-# docker build -t prepreps-frontend-image -f ./k8s/dockerfiles/frontend/Dockerfile .
-# docker run -p 5173:5173 --env-file prep-reps/.env prepreps-frontend-image
-
 FROM node:25.2.1-alpine
 WORKDIR /app
 
