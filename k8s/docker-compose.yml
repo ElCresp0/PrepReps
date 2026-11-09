@@ -1,0 +1,36 @@
+# k8s/docker-compose.yml
+
+services:
+  prepreps-db:
+    image: postgres:16.15-alpine
+    container_name: prepreps-db
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    command: "postgres -c 'max_connections=500'"
+    env_file: ./backend/.env
+    ports:
+      - "5432:5432"
+  prepreps-backend:
+    build:
+      context: .
+      dockerfile: ./k8s/dockerfiles/backend/Dockerfile
+    image: prepreps-backend-image
+    container_name: prepreps-backend
+    env_file: ./backend/.env
+    ports:
+      - "3000:3000"
+  prepreps-frontend:
+    build:
+      context: .
+      dockerfile: ./k8s/dockerfiles/frontend/Dockerfile
+    image: prepreps-frontend-image
+    container_name: prepreps-frontend
+    env_file: ./prep-reps/.env
+    ports:
+      - "5173:5173"
+# volumes:
+  # postgres_data: {}
+networks:
+  default:
+    name: prepreps-network
+    # driver: bridge
