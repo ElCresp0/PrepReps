@@ -63,6 +63,11 @@ pg_restore -U $DATABASE_USERNAME -d $DB_TO_RESTORE ./db/backups/$BACKUP_NAME
 
 ```bash
 cd prep-reps
+
+# set the following env vars in .env
+PUBLIC_BACKEND_HOST=localhost
+PUBLIC_BACKEND_PORT=3000
+
 nvm use 25.2.1
 npm i
 npm run dev

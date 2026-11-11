@@ -36,6 +36,7 @@
   "dependencies": {
     "@lichess-org/chessground": "^10.1.1",
     "@mdi/js": "^7.4.47",
+    "@sveltejs/adapter-node": "^5.5.4",
     "chessops": "^0.15.0"
   }
 }

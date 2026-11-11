@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose.yml convert -o kompose
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: prepreps-frontend
+  name: prepreps-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: prepreps-frontend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f docker-compose.yml convert -o kompose
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: prepreps-frontend
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: prep-reps--env
+          image: prepreps-frontend-image
+          name: prepreps-frontend
+          ports:
+            - containerPort: 5173
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
