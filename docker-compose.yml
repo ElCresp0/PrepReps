@@ -4,8 +4,6 @@ services:
   prepreps-db:
     image: postgres:16.15-alpine
     container_name: prepreps-db
-    # volumes:
-    #   - postgres_data:/var/lib/postgresql/data
     command: "postgres -c 'max_connections=500'"
     env_file: ./backend/.env
     ports:
@@ -28,9 +26,6 @@ services:
     env_file: ./prep-reps/.env
     ports:
       - "5173:5173"
-# volumes:
-  # postgres_data: {}
 networks:
   default:
     name: prepreps-network
-    # driver: bridge

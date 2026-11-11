@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  PUBLIC_BACKEND_HOST: prepreps-backend
+  PUBLIC_BACKEND_PORT: "3000"
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: prepreps-frontend-prep-reps--env
+  name: prep-reps--env
