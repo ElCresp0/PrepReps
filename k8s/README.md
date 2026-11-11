@@ -40,21 +40,19 @@ docker run --network prepreps-network -p 5173:5173 --env-file prep-reps/.env --n
 # cd to project root dir
 
 # build images and start services
-docker compose --project-directory . -f ./k8s/docker-compose.yml up
+docker compose -f ./docker-compose.yml up
 
 # perform the DB migration in running service
-docker compose --project-directory . -f ./k8s/docker-compose.yml exec prepreps-backend bundle exec rails db:create
-docker compose --project-directory . -f ./k8s/docker-compose.yml exec prepreps-backend bundle exec rails db:migrate
+docker compose -f ./docker-compose.yml exec prepreps-backend bundle exec rails db:create
+docker compose -f ./docker-compose.yml exec prepreps-backend bundle exec rails db:migrate
 
 # shut down the application
-docker compose --project-directory . -f ./k8s/docker-compose.yml down
+docker compose -f ./docker-compose.yml down
 ```
 
 ## TODO
 
-- write `YAML` configurations
-- deploy locally via minikube
-- write documentation
 - consider using Helm
 - consider breaking frontend and/or backend images to `build` and `run` steps
 - perform DB migration as separate `Kubernetes Job`
+- add Persistence Volume to the DB
