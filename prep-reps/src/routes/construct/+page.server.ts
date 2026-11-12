@@ -16,10 +16,20 @@ enum STATUS {
 }
 
 export const load: PageServerLoad = async (event) => {
+  const puzzles = event.locals.token
+    ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
+    : DEMO_PUZZLES;
+  const puzzle_index = event.url.searchParams.get("puzzle_id");
+  var puzzleIndex = undefined;
+  if (
+    puzzle_index !== null
+    && puzzles.findIndex(puzzle => puzzle.id == puzzle_index) != -1
+  ) {
+    puzzleIndex = puzzles.findIndex(puzzle => puzzle.id == puzzle_index);
+  }
   return {
-    puzzles: event.locals.token
-      ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
-      : DEMO_PUZZLES,
+    puzzles: puzzles,
+    puzzleIndex: puzzleIndex,
     chessgroundSize: event.cookies.get("chessgroundSize") || CHESSBOARD_SIZE,
   };
 };

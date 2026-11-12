@@ -25,12 +25,16 @@
         nextPuzzle();
     }
 
+    function editPuzzle() {
+        goto(resolve(puzzle ? `/construct?puzzle_id=${puzzle.id}` : '/construct'));
+    }
+
 	let chessgroundButtons = $derived(
         data.signed_in ? [
             {dropdown:
                 [
                     {onclick: deletePuzzle, label: "Delete"},
-                    // {onclick: editPuzzle, label: "Edit"},
+                    {onclick: editPuzzle, label: "Edit"},
                 ],
                 label: "mdi-settings",
             },

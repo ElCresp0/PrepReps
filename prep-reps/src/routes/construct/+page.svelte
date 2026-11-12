@@ -18,6 +18,9 @@
     let puzzleIndex = $derived(_state.puzzleIndex);
 
     $effect(() => {
+        if (data.puzzleIndex !== undefined) {
+            _state.puzzleIndex = data.puzzleIndex;
+        }
         _state.currentPuzzleId = puzzles.at(puzzleIndex)?.id ?? NEW_PUZZLE_ID;
     });
 
