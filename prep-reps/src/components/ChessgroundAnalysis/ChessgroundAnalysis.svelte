@@ -13,9 +13,10 @@
     import { chessgroundAnalysisState as _state } from "./state.svelte";
     import { NEW_PUZZLE_ID } from "../../utils/constants";
     import type { Puzzle } from "../../utils/Puzzle";
+    import type { ActionData } from "../../routes/construct/$types";
 
 
-    let {board="blue", pieces="merida", puzzle=undefined, postPuzzleMessage=""}: {board: string, pieces: string, puzzle: Puzzle | undefined, postPuzzleMessage: string|null} = $props();
+    let {board="blue", pieces="merida", puzzle=undefined, form}: {board: string, pieces: string, puzzle: Puzzle | undefined, form: ActionData} = $props();
     let chessDiv: HTMLElement;
     let ground: Api;
     let chessgroundController: ChessgroundController | undefined = $state();
@@ -48,24 +49,29 @@
         <form method="POST" class="chessground-analysis-form" use:enhance>
             <div class="form-group">
                 <label for="title">Title</label>
-                <input name="title" type="title" id="title">
+                <input name="title" type="text" id="title" value={puzzle?.title ?? ""}>
                 <!-- <button>Reset</button> -->
             </div>
             <div class="form-group">
                 <label for="pgn">Pgn</label>
-                <input name="pgn" type="pgn" id="pgn" value={chessgroundController?.currentPgn}>
+                <input name="pgn" type="text" id="pgn" value={chessgroundController?.currentPgn ?? puzzle?.serialize().pgn}>
             </div>
-            
+
             {#if _state.currentPuzzleId === NEW_PUZZLE_ID}
                 <button type="submit" formaction="?/postPuzzle">Save</button>
             {:else}
+                <input name="puzzleId" type="hidden" id="puzzleId" value={puzzle?.id}>
                 <button type="submit" formaction="?/patchPuzzle">Update</button>
             {/if}
-            
-            <!-- TODO: PATCH -->
-            <!-- <button type="submit" formaction="?/postPuzzle">Update</button> -->
+            <!-- TODO: remove puzzle button -->
+            <!-- TODO: move the title and pgn form to a dialog window -->
         </form>
-        <p class="error_message">{postPuzzleMessage}</p>
+        {#if form?.success}
+            <p>{form.message}</p>
+        {:else if form?.error}
+            <p class="error_message">{form.error}</p>
+        {/if}
+
     </div>
 </div>
 <div class="chessground-puzzle-horizontal-box side-component">

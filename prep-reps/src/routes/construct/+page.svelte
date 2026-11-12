@@ -9,7 +9,7 @@
     import { onMount } from "svelte";
     import { NEW_PUZZLE_ID } from "../../utils/constants";
 
-    let { data }: PageProps = $props();
+    let { data, form }: PageProps = $props();
 
 	let chessgroundSize = $derived(data.chessgroundSize);
     let sideComponentsNb = 2;
@@ -33,6 +33,6 @@
         <PuzzleList puzzles={puzzles} bind:selectedPuzzleIndex={_state.puzzleIndex}/>
     </div>
 
-    <ChessgroundAnalysis board="blue" pieces="merida" puzzle={puzzles.at(puzzleIndex)} postPuzzleMessage={data.postPuzzleMessage}/>
+    <ChessgroundAnalysis board="blue" pieces="merida" puzzle={puzzles.at(puzzleIndex)} form={form}/>
 
 </div>

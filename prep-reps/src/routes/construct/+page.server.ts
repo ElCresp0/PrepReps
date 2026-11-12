@@ -1,4 +1,4 @@
-import { redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import {
   getPuzzles,
   postPuzzle,
@@ -17,7 +17,6 @@ enum STATUS {
 
 export const load: PageServerLoad = async (event) => {
   return {
-    postPuzzleMessage: event.locals.postPuzzleMessage,
     puzzles: event.locals.token
       ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
       : DEMO_PUZZLES,
@@ -27,25 +26,20 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions = {
   postPuzzle: async ({ cookies, request, locals }) => {
-    console.info("postPuzzle action");
     const data = await request.formData();
 
     if (!data.get("title") || !data.get("pgn")) {
-      cookies.set("postPuzzleMessage", "Missing title or pgn", {
-        path: "/",
-      });
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "Missing title or pgn"}
+      );
     }
 
     if (!locals.token) {
-      cookies.set(
-        "postPuzzleMessage",
-        "You must sign in to upload your puzzles",
-        {
-          path: "/",
-        },
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "You must sign in to upload your puzzles"}
       );
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
     }
 
     const response = await postPuzzle(
@@ -57,8 +51,11 @@ export const actions = {
     );
 
     if (response === undefined) {
-      signOutOnError(cookies, "Server error occured during sign up call");
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      signOutOnError(cookies, "Server error occurred during sign up call");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "Server error occurred during sign up call"}
+      );
     }
 
     const responseJson = await response.json();
@@ -67,15 +64,21 @@ export const actions = {
 
     // If there was an error, return an invalid response
     if (response.status !== STATUS.CREATED) {
-      const postPuzzleMessage =
+      const error =
         responseJson.error ??
         responseJson.message ??
         "Failed to post puzzle: unknown error";
-      cookies.set("login_message", postPuzzleMessage, { path: "/" });
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: error}
+      );
     }
 
     // Redirect to the login page
-    throw redirect(STATUS.FOUND, "/construct");
+    // throw redirect(STATUS.FOUND, "/construct");
+    return {
+      message: `successfully uploaded: ${data.get("title")}`,
+      success: true,
+    };
   },
 } satisfies Actions;
