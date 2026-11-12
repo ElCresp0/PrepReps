@@ -106,7 +106,6 @@ export async function getPuzzles(
       },
     );
     const responseJson = await response.json();
-    console.debug(responseJson);
     return responseJson["puzzles"];
   } catch (error) {
     console.debug(

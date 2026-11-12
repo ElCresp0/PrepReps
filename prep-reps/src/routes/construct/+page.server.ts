@@ -1,7 +1,11 @@
-import { redirect } from "@sveltejs/kit";
-import { postPuzzle } from "../../utils/controllers/BackendController";
+import { fail } from "@sveltejs/kit";
+import {
+  getPuzzles,
+  postPuzzle,
+} from "../../utils/controllers/BackendController";
 import type { Actions, PageServerLoad } from "./$types";
 import { signOutOnError } from "$lib";
+import { CHESSBOARD_SIZE, DEMO_PUZZLES } from "../../utils/constants";
 
 enum STATUS {
   OK = 200,
@@ -11,33 +15,41 @@ enum STATUS {
   FOUND = 302,
 }
 
-export const load: PageServerLoad = (event) => {
+export const load: PageServerLoad = async (event) => {
+  const puzzles = event.locals.token
+    ? (await getPuzzles(event.locals.token!)) || DEMO_PUZZLES
+    : DEMO_PUZZLES;
+  const puzzle_index = event.url.searchParams.get("puzzle_id");
+  var puzzleIndex = undefined;
+  if (
+    puzzle_index !== null
+    && puzzles.findIndex(puzzle => puzzle.id == puzzle_index) != -1
+  ) {
+    puzzleIndex = puzzles.findIndex(puzzle => puzzle.id == puzzle_index);
+  }
   return {
-    postPuzzleMessage: event.locals.postPuzzleMessage,
+    puzzles: puzzles,
+    puzzleIndex: puzzleIndex,
+    chessgroundSize: event.cookies.get("chessgroundSize") || CHESSBOARD_SIZE,
   };
 };
 
 export const actions = {
   postPuzzle: async ({ cookies, request, locals }) => {
-    console.info("postPuzzle action");
     const data = await request.formData();
 
     if (!data.get("title") || !data.get("pgn")) {
-      cookies.set("postPuzzleMessage", "Missing title or pgn", {
-        path: "/",
-      });
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "Missing title or pgn"}
+      );
     }
 
     if (!locals.token) {
-      cookies.set(
-        "postPuzzleMessage",
-        "You must sign in to upload your puzzles",
-        {
-          path: "/",
-        },
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "You must sign in to upload your puzzles"}
       );
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
     }
 
     const response = await postPuzzle(
@@ -49,8 +61,11 @@ export const actions = {
     );
 
     if (response === undefined) {
-      signOutOnError(cookies, "Server error occured during sign up call");
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      signOutOnError(cookies, "Server error occurred during sign up call");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: "Server error occurred during sign up call"}
+      );
     }
 
     const responseJson = await response.json();
@@ -59,15 +74,21 @@ export const actions = {
 
     // If there was an error, return an invalid response
     if (response.status !== STATUS.CREATED) {
-      const postPuzzleMessage =
+      const error =
         responseJson.error ??
         responseJson.message ??
         "Failed to post puzzle: unknown error";
-      cookies.set("login_message", postPuzzleMessage, { path: "/" });
-      throw redirect(STATUS.NOT_MODIFIED, "construct");
+      return fail(
+        STATUS.NOT_MODIFIED,
+        {error: error}
+      );
     }
 
     // Redirect to the login page
-    throw redirect(STATUS.FOUND, "/construct");
+    // throw redirect(STATUS.FOUND, "/construct");
+    return {
+      message: `successfully uploaded: ${data.get("title")}`,
+      success: true,
+    };
   },
 } satisfies Actions;

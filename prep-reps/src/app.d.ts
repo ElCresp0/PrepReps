@@ -7,7 +7,6 @@ declare global {
       token: string?;
       username: string?;
       login_message: string?;
-      postPuzzleMessage: string?;
     }
     // interface PageData {}
     // interface PageState {}

@@ -26,10 +26,12 @@ export default defineConfig(
     },
   },
   {
-    files: ["**/*.svelte", "**/*.svelte.ts", "**/*.svelte.js"],
+    files: ["**/*.svelte", "**/*.ts", "**/*.js"],
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ["eslint.config.js", "svelte.config.js"],
+        },
         extraFileExtensions: [".svelte"],
         parser: ts.parser,
         svelteConfig,
